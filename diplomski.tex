@@ -118,21 +118,21 @@ Formalno, sustav za udaljeno ocjenjivanje \citep{wasik2018survey} definira kao u
 
 Podnošenje zahtjeva za izvršavanje programskog kôda podrazumijeva prihvaćanje programskog kôda u sustav, prevođenje po potrebi i verifikaciju da je program spreman za izvršavanje. U procjeni podnesenoga programskog kôda program se pokreće za svaki ispitni primjer i provjerava se uspješnost izvođenja programa u zadanim vremenskim i memorijskim ograničenjima. Također, u istoj fazi, provjerava se standardni izlaz \engl{standard output} korisničkog programa i uspoređuje ga se s očekivanim izlazom za trenutni ispitni primjer \engl{expected output}. Konačno, u fazi ocjenjivanja, podnesenom programskom kôdu dodjeljuje se ocjena na temelju rezultata iz prethodnih faza. Tako npr.\ na ocjenu u natjecateljskom programiranju može utjecati vrijeme koje je bilo potrebno natjecatelju da riješi pojedini zadatak. Što kasnije natjecatelj riješi ispravno zadatak to će manje bodova dobiti čak i ako su mu svi ispitni primjeri ispravni uz zadana vremenska i memorijska ograničenja.
 
-\section{Udaljeno izvođenje programskog kôda}
+\section{Udaljeno izvršavanje programskog kôda}
 Prethodno poglavlje, koje daje pregled svega nekoliko najčešćih slučajeva uporabe sustava za udaljeno ocjenjivanje, također daje naslutiti da se za svaki slučaj uporabe programski kôd korisnika mora negdje prevesti i izvesti. Najjednostavnije rješenje ovog problema bilo bi da korisnik samostalno prevede i izvede svoj program, i da zatim u sustav postavi rješenja koja je dobio. Ovakav pristup bio bi u redu za napredne korisnike koji znaju instalirati i koristiti odgovarajući prevoditelj za odabrani programski jezik, međutim, za početnike ovakav bi pristup bio jako loše korisničko iskustvo. Međutim, ovo nije jedini argument zašto nije dobro da korisnik samostalno prevodi, izvodi i postavlja rješenja svog programa. Ispitni primjeri trebaju ostati nepoznati korisniku kako ih korisnik ne bi zloupotrijebio. Korisnik ne treba znati očekivani izlaz svog programa da bi ga zloupotrijebio, za neke zadatke dovoljno je imati standardni ulaz \engl{standard input} iz kojeg se lako dobije očekivani izlaz. Već se samo sa ovim snažno opravdanim zahtjevom može zaključiti da je programski kôd korisnika potrebno izvršiti na poslužitelju kojem korisnik nema pristup. Ovakav zahtjev otvara novi spektar problema koje je potrebno riješiti i koji su opisani u \citep{kurnia2001online}.
 
 Pokretanje programskog kôda korisnika na udaljenom poslužitelju nameće izazov da se korisnikov program mora pokrenuti u zaštićenom okruženju \engl{sandboxed environment} kako ne bi negativno utjecao na rad poslužitelja i ostalih procesa. Postoje razne tehnike opisane u \citep{yi2014comparison} koje se za to koriste, a u kontekstu sustava za udaljeno ocjenjivanje od zaštićenog okruženja očekujemo sljedeće funkcionalnosti:
 \begin{itemize}
     \item inicijalizaciju zaštićenog okruženja,
     \item mogućnost prenošenja programskog kôda korisnika u zaštićeno okruženje,
-    \item prevođenje i izvođenje programskog kôda u zaštićenom okruženju uz navedena vremenska i memorijska ograničenja,
+    \item prevođenje i izvršavanje programskog kôda u zaštićenom okruženju uz navedena vremenska i memorijska ograničenja,
     \item prikupljanje izlaza programa i meta podatka o izvođenju, i
     \item uništavanje zaštićenog okruženja.
 \end{itemize}
 
 Važnost korištenja zaštićenog okruženja koje osigurava da programski kôd korisnika ne šteti radu poslužitelja i ostalih procesa prikazuju isječci \ref{lst:infinite-compilation} i \ref{lst:fork-bomb} napisani u programskom jeziku C. 
 
-Isječak \ref{lst:infinite-compilation} prikazuje ispravan C program koji uključuje uređaj pseudo-slučajnih brojeva sustava Linux. Budući da uređaj generira beskonačni slijed pseudo-slučajnih brojeva, uključivanje tog uređaja u programu dovodi do beskonačnog vremena prevođenja. Ukoliko više korisnika napravi zahtjev za izvođenjem ovakvog ili sličnog programa na poslužitelju, brzo dolazi do iscrpljivanja računskih i memorijskih resursa na poslužitelju i time poslužitelj postaje neupotrebljiv.
+Isječak \ref{lst:infinite-compilation} prikazuje ispravan C program koji uključuje uređaj pseudo-slučajnih brojeva sustava Linux. Budući da uređaj generira beskonačni slijed pseudo-slučajnih brojeva, uključivanje tog uređaja u programu dovodi do beskonačnog vremena prevođenja. Ukoliko više korisnika napravi zahtjev za izvršavanjem ovakvog ili sličnog programa na poslužitelju, brzo dolazi do iscrpljivanja računskih i memorijskih resursa na poslužitelju i time poslužitelj postaje neupotrebljiv.
 Iz ovog je jednostavnog primjera jasno da je potrebno proces prevođenja izolirati u zaštićeno okruženje koje će imati ograničene vremenske i memorijske resurse.
 
 \begin{lstlisting}[
@@ -167,24 +167,244 @@ Oba isječka još jednom potvrđuju da je u sustavima za udaljeno ocjenjivanje n
 \section{Sustavi za udaljeno izvršavanje programskog kôda}
 Sustav za udaljeno izvršavanje programskog kôda (engl.\ \textit{online code execution system}, krat.\ \textit{OCES}) je sustav koji nudi \textit{web} aplikacijsko sučelje \engl{web API} za prevođenje i izvršavanje proizvoljnog programskog kôda. Arhitekturalni prikaz na slici \ref{fig:oj-ecosystem} izdvaja sustav za udaljeno izvršavanje programskog kôda kao zasebnu komponentu na koju se oslanjaju sustav za udaljeno ocjenjivanje, a zatim i sustavi razvijeni za specifičan slučaj uporabe.
 
-Formalno, \citep{9245310} definira sustav za udaljeno izvršavanje programskog kôda kroz funkcionalne i ne funkcionalne zahtjeve.
+Sustav za udaljeno izvršavanje programskog kôda najčešće je strogo povezan i zavisan o ostatku komponenata u arhitekturu sustava za udaljeno ocjenjivanje \citep{9245310}, međutim, u ovom radu razmatraju se oni sustavi za udaljeno izvršavanje programskog kôda koji su neovisni o ostatku arhitekture koja se na njih oslanja.
 
-\subsection{Arhitektura sustava za udaljeno izvršavanje programskog kôda}
-\subsection{Sustav Judge0}
-\subsection{Sustav Piston}
+Formalno, \citep{9245310} definira sustav za udaljeno izvršavanje programskog kôda kroz funkcionalne i nefunkcionalne zahtjeve.
+
+\subsubsection{Funkcionalni zahtjevi}
+Sustav za udaljeno izvršavanje programskog kôda \textbf{mora} pružiti:
+\begin{itemize}
+    \item dobro dokumentirano \textit{web} aplikacijsko sučelje,
+    \item podršku za prevođenje i izvršavanje proizvoljnog programskog kôda za barem jedan programski jezik,
+    \item izvršavanje u zaštićenom okruženju s pretpostavljenim vremenskim i memorijskim ograničenjima,
+    \item podršku za navođenje proizvoljnog standardnog ulaza \engl{standard input},
+    \item podršku za dohvat osnovnih meta podataka o rezultatu izvršavanja programa
+\end{itemize}
+
+Dodatno, sustav za udaljeno izvršavanje programskog kôda \textbf{može} pružiti podršku za:
+\begin{itemize}
+    \item navođenje dodatnih opcija prevodioca,
+    \item navođenje komandno-linijskih argumenata,
+    \item navođenje vremenskih i memorijskih ograničenja,
+    \item inicijalizaciju zaštićenog okruženja s dodatnim datotekama,
+    \item dohvat detaljnih meta podataka o izvršavanju programa,
+    \item skupne zahtjeve za izvršavanje,
+    \item višestruke standardne ulaze, i
+    \item autentifikaciju.
+\end{itemize}
+
+\subsubsection{Nefunkcionalni zahtjevi}
+Sustav za udaljeno izvršavanje programskog kôda \textbf{treba} biti:
+\begin{itemize}
+    \item skalabilan,
+    \item konfigurabilan,
+    \item siguran,
+    \item lako upogonljiv,
+    \item efikasan,
+    \item elastičan,
+    \item proširiv, i
+    \item robustan.
+\end{itemize}
+
 \subsection{Sustav Sphere Engine}
+Sustav za udaljeno izvršavanje programskog kôda Sphere Engine razvila je Poljska tvrtka Sphere Research Labs\footnote{https://sphere-research.com} 2008.\ godine. Sphere Engine je jedan od vodećih komercijalnih sustava za udaljeno izvršavanje programskog kôda kojeg koristi više od 1000 institucija u 180 država. Jedna od najpoznatijih \textit{web} aplikacija koja koristi Sphere Engine je SPOJ \citep{SPOJ} koju je razvila ista tvrtka, a na kojoj korisnici mogu rješavati razne problemske zadatke iz domene natjecateljskog programiranja. Osim SPOJ-a, CodeChef \citep{CodeChef} također koristi Sphere Engine za udaljeno izvršavanje programskog kôda.
 
-\chapter{Analiza sustava za udaljeno izvršavanje programskog kôda}
+Budući da je Sphere Engine zatvoreni komercijalni sustav nisu dostupne informacije o njegovoj izvedbi, niti o tome u kojim tehnologijama je razvijen.
+
+U svrhu ovog rada dovoljno je spomenuti da sustav omogućuje prevođenje i izvršavanje programskog kôda u mnoštvo programskih jezika od kojih će u ovom radu biti promatrani samo Python, \text{C++} i Java.
+
+Također, sustav Sphere Engine omogućuje asinkrono izvršavanje programskog kôda koje podrazumijeva da korisnik asinkrono mora provjeravati rezultat izvođenja nakon što je napravio zahtjev za izvršavanje.
+
+\subsection{Sustav Piston}
+Sustav za udaljeno izvršavanje programskog kôda Piston \citep{Piston} je sustav otvorenog kôda koji je dostupan na platformi GitHub. Razvijen je i koristi se u edukativne svrhe zajednice koju vodi autor tog projekta.
+
+Kao zaštićenu okolinu u kojoj se izvršava programski kôda korisnika, sustav Piston koristi Docker \citep{merkel2014docker} i nudi osnovnu dokumentaciju \textit{web} aplikacijskog sučelja. Sustav Piston, kao i Sphere Engine podržava mnoštvo programskih jezika, međutim u ovom radu promatrani su samo Python, \text{C++} i Java.
+
+Za razliku od sustava Sphere Engine koji podržava isključivo asinkrono izvršavanje programskog kôda, sustav Piston podržava isključivo sinkrono izvršavanje. Sinkrono izvršavanje podrazumijeva da će pozivatelj od sustava Piston dobiti rezultate izvođenja kao odgovor na HTTP zahtjev.
+
+\subsection{Sustav Judge0}
+Razvoj sustava za udaljeno izvršavanje programskog kôda Judge0 \citep{9245310} započeo je u kolovozu 2016.\ godine na inicijativu autora ovog rada. Cilj razvoja sustava Judge0 bio je izgradnja novog, robustnog, skalabilnog i lako uporabljivog sustava za udaljeno izvršavanje programskog kôda koji se može jednostavno integrirati u razne \textit{web} aplikacije koje trebaju funkcionalnost izvršavanja programskog kôda.
+
+Do danas, u vrijeme pisanja ovog rada, javna instanca sustava Judge0 izvršila je preko 12 milijuna programa korisnika diljem svijeta koji su sustav Judge0 integrirali u svoje proizvode. Također, u svijetu postoji preko 200 aktivnih instanci sustava Judge0 kojeg su razne institucije i tvrtke pokrenule na svojim poslužiteljima. Od ak.god.\ 2018./2019. sustav Judge0 aktivno se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu kao integracijski dio platforme za e-učenje Edgar \citep{mekterovic2020building}.
+
+Sustav Judge0 podržava prevođenje i izvršavanje programa s preko 60 različitih prevodioca, podržava sinkrono i asinkrono izvršavanje programskog kôda, a kao zaštićenu okolinu za prevođenje i izvršavanje koristi Isolate \citep{marevs2012new}.
+
+Bogata dokumentacija\footnote{https://ce.judge0.com} \textit{web} aplikacijskog sučelja omogućava razvijateljima da brzo i lako upoznaju sve funkcionalnosti ovog sustava koji sadrži sve funkcionalnosti koje nude sustavi Piston i Sphere Engine.
+
+\chapter{Analiza performansi}
+Analiza performansi sustava za udaljeno izvršavanje programskog kôda se ne spominje u literaturi budući da se tek od \citep{9245310} sustavi za udaljeno izvršavanje programskog kôda razmatraju kao zasebne komponente u arhitekturi sustava za udaljeno ocjenjivanje.
+\citep{drung2011enhance} razmatraju optimizaciju performansi postojećeg sustava za udaljeno ocjenjivanje, međutim, njihovo istraživanje usmjereno je u ugađanje opcija operacijskog sustava i algoritama raspoređivanja zadataka za izvršavanje.
+
+Ovaj rad predstavlja novi radni okvir za analizu performansi sustava za udaljeno izvršavanje programskog kôda koji je nezavisan o sustavu koji se testira. Prema \citep{nidhra2012black} ovakva vrsta analize u spektru testiranja softvera naziva se \textit{system testing}, a proučava kako sustav funkcionira u produkcijskom okruženju iz perspektive korisnika. Također, prema uvidu koji imamo u sustav koji testiramo ovakva vrsta testiranja, a koja se razmatra u ovom radu, naziva se \textit{black box testing}.
+
+Radni okvir analize performansi sustava za udaljeno izvršavanje programskog kôda (u daljnjem tekstu: \textit{radni okvir} i \textit{sustav}) sastoji se od nekoliko dimenzija kroz koje možemo promatrati performanse sustava. Kratki uvodi u svaku dimenziju slijede u nastavku ove cjeline, a nakon toga slijedi detaljni pregled svake dimenzije.
+
+\subsubsection{Višekorisničko okruženje}
+Prilikom analize u radnom okviru možemo mijenjati broj korisnika $N$ koji istovremeno stvaraju zahtjeve za izvršavanje programskog kôda. Osim broja korisnika koji istovremeno stvaraju zahtjev možemo promatrati i dinamiku kojom ti zahtjevi dolaze u sustav. Tako možemo govoriti o \textbf{impulsnom opterećenju} sustava gdje $N$ korisnika $M$ puta istovremeno napravi zahtjev za izvršavanje. U impulsnom opterećenju govorimo dakle o $M$ impulsa amplitude $N$. Impulsno opterećenje sustava u radnom okviru zahtjeva da impuls $M$ ne može započeti dok impuls $M-1$ ne završi. Na kraju impulsnog opterećenja u sustav je pristiglo $N \times M$ zahtjeva.
+
+Za razliku od implusnog opterećenja, \textbf{kontinuirano opterećenje} sustava dozvoljava da impuls $M$ započne dok impuls $M-1$ traje, uz ogradu da se impuls $M$ smije dogoditi tek u vremenu $t_{M} = t_{M-1} + 1$, gdje je vrijeme $t$ izraženo u sekundama. Stoga, odabirom kontinuiranog opterećenja od $N$ korisnika, $M$ opet predstavlja broj impulsa, ali i vrijeme (u sekundama) trajanje eksperimenta. U sustavu će ponovo pristići $N \times M$ zahtjeva, međutim, drugačijom dinamikom nego kod impulsnog opterećenja.
+
+Kontinuirano opterećenje sustava možemo podijeliti na determinističko i stohastičko. \textbf{Determinističko kontinuirano opterećenje} prethodno je opisano kontinuirano opterećenje gdje $N$ korisnika istovremeno stvara zahtjeve svake sekunde u ukupnom trajanju od $M$ sekundi. \textbf{Stohastičko kontinuirano opterećenje} svake sekunde u ukupnom trajanju od $M$ sekundi stvara $N_t$ korisnika gdje $N_t$ dolazi iz Poissonove distribucije s parametrima $\lambda = N$.
+
+\subsubsection{Scenariji izvršavanja i programski jezici}
+Prilikom pokretanja eksperimenta potrebno je definirati koji programski kôd će svaki korisnik koristiti. U okviru ovog rada promatraju se:
+\begin{itemize}
+    \item osnovni scenarij
+    \item scenarij procesnog opterećenja
+    \item scenarij mrežnog opterećenja
+    \item scenarij procesnog i mrežnog opterećenja
+\end{itemize}
+
+Svaki scenarij implementiran je u tri različita programska jezika: Python, \text{C++} i Java. Iz toga slijedi da je na raspolaganju 12 različitih programskih kôdova koje možemo izvršavati i uspoređivati.
+
+\subsubsection{Strategija izvršavanja}
+Postoje dvije strategije izvršavanja programskog kôda koje sustavi za udaljeno izvršavanje programskog kôda podržavaju: asinkrono i sinkrono izvršavanje. Kod asinkronog izvršavanja korisnik nakon prvog zahtjeva za izvršavanjem kao rezultat dobiva jedinstveni ključ \engl{token} s kojim može asinkrono provjeravati rezultat izvršavanja. Korisnik je odgovoran za provjeru rezultata, a svaki sustav na svoj način definira kada korisnik može smatrati da je njegovo izvršavanje završilo. Kod sinkronog izvršavanja korisnik kao rezultat zahtjeva dobiva rezultat izvršavanja.
+
+\subsubsection{Sustav za izvršavanje}
+Prilikom pokretanja eksperimenta potrebno je odrediti koji sustav želimo testirati. U okviru ovog rada promatraju se tri vrste sustava: Sphere Engine, Piston i Judge0, međutim, omogućeno je da se promatraju različite instance svake vrste sustava.
+
+\section{Simulacija višekorisničkog opterećenja}
+Budući da sustav za udaljeno izvršavanje programskog kôda neposredno preko sustava za udaljeno ocjenjivanje koristi više korisnika istovremeno, u analizi performansi potrebno je razmatrati višekorisničko opterećenje.
+
+Radni okvir omogućuje razmatranje tri različite vrste višekorisničkog opterećenja koje se koriste prilikom stvaranja zahtjeva za izvršavanjem programskog kôda (u nastavku teksta: \textit{zahtjevi}):
+\begin{itemize}
+    \item impulsno-determinističko opterećenje,
+    \item kontinuiran-determinističko opterećenje, i
+    \item kontinuirano-stohastičko opterećenje.
+\end{itemize}
+
+Svaka vrsta višekorisničkog opterećenja detaljno je opisana u nastavku.
+
+\subsection{Impulsno-determinističko opterećenje sustava}
+Impulsno-determinističko opterećenje sustava definirano je parametrima $N$ i $M$ gdje $N$ predstavlja broj zahtjeva koje treba poslati istovremeno, a $M$ predstavlja broj iteracija koje je potrebno napraviti uz ogradu da zahtjevi poslani u iteraciji $i$ smiju biti poslani tek nakon što se izvrše zahtjevi u iteraciji $i - 1$. U svakoj od $M$ iteracija poslat će se $N$ zahtjeva istovremeno, odnosno, na kraju eksperimenta opterećenja u sustav je pristiglo ukupno $N \times M$ zahtjeva za izvršavanje.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Impulse-deterministic Load (N = 10, M = 6).pdf}
+	\caption{
+		Impulsno-determinističko opterećenje sustava (N = 10, M = 6).
+	}
+	\label{fig:impulse-load}
+\end{figure}
+
+Slika \ref{fig:impulse-load} prikazuje primjer dinamike impulsno-determinističkog opterećenja sustava. U ovom primjeru koristi se 6 impulsa amplitude 10, odnosno, 6 puta se šalje 10 istovremenih zahtjeva za izvršavanje. Slika također prikazuje da je trećem impulsu zahtjeva potrebno 2 sekunde više za izvršavanje nego što je to bilo impulsima 1 i 2. Ovakav primjer odabran je kako bi se naglasilo svojstvo disjunktnosti susjednih impulsa. Interpretacija rezultata ovog primjera i objašnjenje zbog čega može doći do pomaka u vremenu izvršavanja ostavlja se za raspravu.
+
+\subsection{Kontinuirano-determinističko opterećenje sustava}
+Kontinuirano-determinističko opterećenje sustava definirano je također parametrima $N$ i $M$, međutim, za razliku od prethodne vrste opterećenja sustava, ograda ove vrste opterećenja jest da istovremeni zahtjevi u iteraciji $i$ mogu započeti tek u vremenu $t_i = t_{i - 1} + 1$, gdje je $t$ vrijeme izraženo u sekundama.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Continuous-deterministic Load (N = 10, M = 20).pdf}
+	\caption{
+		Kontinuirano-determinističko opterećenje sustava (N = 10, M = 20).
+	}
+	\label{fig:deterministic-load}
+\end{figure}
+
+\subsection{Kontinuirano-stohastičko opterećenje sustava}
+Kontinuirano-stohastičko opterećenje sustava koristi Poissonovu distribuciju s parametrom $\lambda = N$ za određivanje broja istovremenih zahtjeva u koraku $i$. Slika \ref{fig:stochastic-load} prikazuje primjer dinamike dolaska zahtjeva u sustav koristeći kontinuirano-stohastičko opterećenje s parametrima $N=10$ i $M=20$. Niz pseudo-slučajnih brojeva sa slike \ref{fig:stochastic-load} generiran je pomoću isječka \ref{lst:poisson-numbers} napisanog u Python programskog jeziku.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Continuous-stochastic Load (N = 10, M = 20).pdf}
+	\caption{
+		Kontinuirano-stohastičko opterećenje sustava (N = 10, M = 20).
+	}
+	\label{fig:stochastic-load}
+\end{figure}
+
+\begin{lstlisting}[
+    caption={Generiranje pseudo-slučajnih brojeva iz Poissonove distribucije.},
+    label={lst:poisson-numbers},
+    language=python
+]
+import numpy
+N, M = 10, 20
+print(numpy.random.poisson(N, M))
+\end{lstlisting}
+
+\section{Korisnički scenariji i programski jezici}
+Korisnički scenariji definiraju obrazac korištenja sustava za udaljeno izvršavanje programskog kôda. U produkcijskom okruženju nemoguće je predvidjeti koji programski kôd će sustav trebati izvesti, međutim, u svrhu analize sustava za udaljeno izvršavanje programskog kôda programi koji pristižu u sustav mogu se podijeliti u četiri osnovne kategorije: osnovni scenarij, scenarij procesnog opterećenja, scenarij mrežnog opterećenja, scenarij procesnog i mrežnog opterećenja.
+
+Svaki scenarij zapravo je pažljivo odabrani zadatak koji korisnik treba riješiti, međutim, za razliku od uobičajenih zadataka, scenarij daje uputu na koji način zadatak treba riješiti. Ova ograda važna je da bi se mogla raditi analiza između dva različita scenarija. Tako se npr.\ uz pažljivo odabrane scenarije mogu uspoređivati scenarij procesnog opterećenja, i scenarij procesnog i mrežnog opterećenja samo ako se zna da je drugi zaista mrežno opterećena inačica prvog.
+
+Prilikom analize pretpostavlja se da su programski kôdovi scenarija ispravni, odnosno da se mogu uspješno prevesti i izvesti u svakom sustavu koji se promatra. Ova pretpostavka uspješnosti prevođenja i izvršavanja ključna je u analizi budući da u višekorisničkom opterećenju može doći do preopterećenja sustava koje rezultira npr. u neuspješnom prevođenju zbog manjka radne memorija. Pregled razloga neuspješnih izvršavanja bit će opisani u analizi performansi pojedinih sustava.
+
+Implementacija svakog korisničkih scenarija dostupna je u tri programska jezika: \text{C++}, Java i Python. Iako se u okviru ovog rada promatraju samo navedeni programski jezici, radni okvir analize nije ograničen samo na njih. Također u ovom radu ne razmatraju se višedretvene implementacije scenarija.
+
+Svaki scenarij sastoji se od: sadržaja standardnog ulaza, programskog kôda i očekivanog standardnog izlaza. Standardni ulaz i očekivani standardni izlaz programa isti je za svaki programski jezik u kojem je scenarij napisan. Sadržaj standardnog ulaza dovodi se na ulaz programa koji je nastao prevođenjem programskog kôda scenarija u odabranom programskom jeziku, a očekivani standardni izlaz koristi se za usporedbu sa standardnim izlazom programa nakon njegovog izvršavanja. Ova provjera važna ja kako bi se utvrdilo da je program zaista odradio zadatak zadan scenarijem.
+
+\subsection{Osnovni scenarij}
+Osnovni scenarij zahtjeva da korisnički program na standardni izlaz ispiše ``\textit{hello, world}''. Sadržaj standardnog ulaza ovog scenarija ne sadrži ništa, dok očekivani standardni izlaz programa sadrži niz znakova ``\textit{hello, world}''.
+
+Osnovni scenarij predstavlja najjednostavniji smisleni programski kôd koji korisnik može izvesti putem sustava. Ovaj scenarij također predstavlja minimalno mrežno, procesno i memorijsko opterećenje na poslužitelju sustava.
+
+Vremenska i memorijska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(1)$.
+
+\subsection{Scenarij procesnog opterećenja}
+Scenarij procesnog opterećenja zahtjeva ispis medijana od 20000 cijelih brojeva tipa \textit{integer} koji na standardni ulaz dolaze silazno sortirani. Scenarij također zahtjeva da se pročitanih 20000 brojeva najprije uzlazno sortira mjehurićastim sortiranjem \engl{bubble sort}.
+
+Vremenska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(n^2)$, a memorijska složenost je $\mathcal{O}(n)$, gdje je $n$ duljina ulaznog niza brojeva.
+
+Odabir 20000 za duljinu ulaznog niza brojeva i zahtjev da brojevi budu sortirani suboptimalnim algoritmom mjehurićastog sortiranja nije slučajan, nego pažljivo odabran budući da vrijeme izvođenja programa koji implementira rješenje tog scenarija traje zamjetno dulje od osnovnog scenarija. Konkretno, na procesoru Intel Core i7 radnog takta 2.6 GHz računala MacBook Pro (16-inch, 2019) \text{C++} implementacija rješenja ovog scenarija traje oko 2.5 sekundi.
+
+Ulazni niz brojeva koji na standardni ulaz dolaze silazno sortirani odabran je zato što to predstavlja najgori slučaj \engl{worst case} za algoritam mjehurićastog sortiranja koji brojeve treba sortirati uzlazno.
+
+\subsection{Scenarij mrežnog opterećenja}
+Scenarij mrežnog opterećenja očekuje da program ispiše sumu 750000 cijelih brojeva tipa \textit{integer} koji na standardni ulaz dolaze silazno sortirani.
+
+Mrežno opterećenje ovog scenarija očituje se u veličini sadržaja standardnog ulaza kojeg je poterbno dovesti programu, a ono iznosi 5.1 MB.
+
+Vremenska i memorijska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(n)$, gdje je $n$ duljina ulaznog niza brojeva.
+
+\subsection{Scenarij procesnog i mrežnog opterećenja}
+Scenarij procesnog i mrežnog opterećenja kombinacija je prethodna dva scenarija. Ovaj scenarij zahtjeva da program ispiše medijan od prvih 20000 brojeva iz niza od 750000 brojeva koji na standardni ulaz dolaze silazno sortirani. Također, kao i u scenariju procesnog opterećenja, od programa se očekuje da brojeve sortira suboptimalnim algoritmom mjehurićastog sortiranja.
+
+Standardni ulaz ovog scenarija isti je kao i standardni ulaz scenarija mrežnog opterećenja, i algoritam rješenja ovog scenarija isti je kao algoritam rješenja scenarija procesnog opterećenja.
+
+Vremenska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(n^2)$, a memorijska složenost je $\mathcal{O}(n)$, gdje je $n$ duljina ulaznog niza brojeva, uz ogradu da $n$ ne može biti veći od 20000.
+
+\section{Strategije izvršavanja}
+Sync vs async.
+
+\section{Dinamika izvršavanja}
+Create order. Probes.
+
+\section{Metrike za analizu performansi}
+\subsection{Uspješnost izvršavanja}
+success rate.
+
+\subsection{Vrijeme obrade}
+turn around time.
 
 \chapter{Sustav Hélory}
-\section{Specifikacija zahtjeva}
 \section{Korištene tehnologije}
-\section{Programska izvedba}
-\section{Pregled sučelja}
+Golang.
 
-\chapter{Primjer korištenja sustava Hélory u analizi sustava Judge0}
+\section{Prikupljanje metrika za analizu performansi}
+timestamps prije svakog i nakon svakog zahtjeva.
 
-\chapter{Budući razvoj sustava Hélory}
+\section{Pregled komandno-linijskog sučelja}
+jednostavno sučelje s mnogo opcija.
+
+\subsection{Definiranje dostupnih sustava za udaljeno izvršavanje}
+\subsubsection{Podržani sustavi za udaljeno izvršavanje}
+\subsubsection{Podržane strategije izvršavanja}
+\subsection{Definiranje korisničkih scenarija}
+\subsubsection{Datoteka korisničkog scenarija}
+\subsubsection{Programski kôd}
+\subsubsection{Standardni ulaz}
+\subsubsection{Standardni izlaz}
+\subsection{Pokretanje opterećenja sustava}
+\subsubsection{Determinističko opterećenje sustava}
+\subsubsection{Stohastičko opterećenje sustava}
+\section{Pregled sučelja grafičkih rezultata}
+
+\chapter{Primjer korištenja sustava Hélory}
+\section{Analiza performansi sustava Judge0}
+\section{Analiza performansi sustava Piston}
+
+\chapter{Budući razvoj}
 
 \chapter{Zaključak}
 
