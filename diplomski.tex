@@ -37,8 +37,27 @@
 \tableofcontents
 
 \chapter{Uvod}
+Računarsko razmišljanje \engl{computational thinking} je termin kojeg je prvi put upotrijebio Seymour Aubrey Papert 1980.\ godine u svojoj knjizi \textit{Mindstorms: Children, Computers, and Powerful Ideas} \citep{10.5555/1095592} u kojoj, između ostalog, razmatra korištenje računala kao alata koji može utjecati na način na koji ljudi uče i razmišljaju. Njegova vizija korištenja računala u edukaciji djece bila je naučiti djecu programirati računalo s ciljem da djeca već u ranoj dobi dotaknu neke od najdubljih ideja iz raznih znanstvenih disciplina. Papert programiranje računala opisuje kao komunikaciju između čovjeka i računala jezikom koji oboje razumiju, i time je njegova ideja razvoja računala, s kojim je prirodno naučiti  komunicirati, temeljna ideja koja se provlači kroz cijelu knjigu. Njegove ideje i inovacije promijenile su način na koji milijuni djece stvaraju i uče \citep{Papert.MITMediaLab}.
+
+Termin \textit{računarsko razmišljanje} ponovo dobiva značajnu pažnju akademske zajednice \citep{grover2013computational} 2006.\ godine objavom istoimenog rada Jeannette M.\ Wing  koja računarsko razmišljanje svrstava u fundamentalnu vještinu pored čitanja, pisanja i aritmetike \citep{wing2006computational}. Njezin je rad potaknuo intenzivnije istraživanje o važnosti uključivanja računarskog razmišljanja u edukacijski sustav \citep{lockwood2017computational}. U svom izvješću iz 2014.\ godine internacionalna neprofitna organizacija European Schoolnet prepoznala je važnost integracije računarskog razmišljanja u edukacijski sustav te navode da već tada programiranje počinje biti sve ključnija vještina koju će morati steći svi mladi, ali i radnici iz širokog spektra industrije \citep{balanskat2014computing}. Navode, također, da je programiranje dio logičkog rasuđivanja i da ono pripada ključnim vještinama 21.\ stoljeća, što dodatno potkrjepljuje ideje Jeannette M.\ Wing iz 2006.\ godine.
+
+Programiranje je od 2015.\ godine uključeno u nastavni plan i program 16 Europskih zemalja koje kod svojih učenika žele razviti vještine logičkog razmišljanja i rješavanja problema, ali i povećati mogućnost zapošljavanja \citep{balanskat2015computing}. Budući da se vještina programiranja stječe vježbanjem \citep{kurnia2001online}, institucije, koje u svom nastavnom planu i programu nude programiranje, svojim studentima trebaju omogućiti pristup biblioteci problemskih zadataka. Programska rješenja studenata konačno netko treba i ocijeniti, a tradicionalno ručno ocjenjivanje programskog kôda unosi dodatne probleme \citep{kurnia2001online}.
+
+Probleme koje unosi tradicionalno ručno ocjenjivanje programskog kôda rješavaju \textbf{sustavi za udaljeno ocjenjivanje} (engl.\ \textit{online judges}, krat.\ \textit{OJs}) koji poboljšavaju proces edukacije i ocjenjivanja, ali i omogućuju studentima da prevedu \engl{compile} i izvrše \engl{execute} svoj programski kôda prije predaje \citep{wang2021metaoj}. Sustavi za udaljeno ocjenjivanje, poput \textit{web} aplikacije Edgar \citep{mekterovic2020building} razvijene na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu, omogućuju nastavnicima izradu \textit{online} provjera znanja koje pomoću ispitnih primjera automatski ocjenjuju rješenja studenata predana u obliku programskog kôda i time ubrzavaju proces ispravljanja i ocjenjivanja, i smanjuju mogućnost uvođenja grešaka koje se mogu dogoditi prilikom ručnog ocjenjivanja. Također, sustavi za udaljeno ocjenjivanje omogućuju studentima brzi pristup problemskim zadacima koje mogu rješavati i time vježbati svoju vještinu programiranja. Sustavi za udaljeno ocjenjivanje najčešće omogućuju studentima programiranje u pregledniku odnosno kroz \textit{web} aplikaciju koju koristi njihova institucija. Mogućnost programiranja i predaje rješenja kroz \textit{web} aplikaciju olakšava studentima, pogotovo početnicima, proces postavljanja okoline za programiranje u programskom jeziku koji pokriva nastavni plan i program koji pohađaju.
+
+Jasno je dakle da se programski kôd studenta ne može prevesti i izvršiti direktno na njegovom računalu budući da na njemu nema postavljenju okolinu koja to omogućuje. Programski kôd studenta kojeg piše u svom pregledniku izvršava se na poslužitelju sustava za udaljeno ocjenjivanje. Sustav za udaljeno ocjenjivanje, poput već spomenute \textit{web} aplikacije Edgar, oslanja se na \textbf{sustav za udaljeno izvršavanje programskog kôda} (engl.\ \textit{online code execution system}, krat.\ \textit{OCES}) koji mu osigurava da će se programski kôd studenta prevesti i izvršiti bez negativnih posljedica za poslužitelj i ostalih korisnika aplikacije. Stoga OCES predstavlja ključnu komponentu u arhitekturi sustava za udaljeno ocjenjivanje o kojoj ovisi prije svega sigurnost i integritet poslužitelja, a zatim i korisničko iskustvo, i kvaliteta usluge.
+
+Sustavi za udaljeno izvršavanje programskog kôda nude \textit{web} aplikacijsko sučelje koje sustavi za udaljeno ocjenjivanje mogu transparentno koristiti za stvaranje zahtjeva za izvršavanje programskog kôda, dohvat informacija o izvršavanju i dohvat rezultata izvršavanja. Sučelje koje takvi sustavi nude je jednostavno za korištenje, međutim, usluga koju nude je resursno i sigurnosno zahtjevna. Dobro izveden i skaliran sustav za udaljeno izvršavanje programskog kôda donosi veliku vrijednost sustavima za udaljeno ocjenjivanje budući da se razvojni inženjeri tih sustava tada mogu u potpunosti fokusirati na razvoj proizvoda i njegovih funkcionalnosti što krajnjem korisniku donosi bolje korisničko iskustvo i kvalitetniju uslugu.
+
+Budući da se sustavi za udaljeno izvršavanje programskog kôda u literaturi razmatraju kao zasebne komponente arhitekture sustava za udaljeno ocjenjivanje tek od \citep{9245310}, ne postoji u literaturi radni okvir ocjene kvalitete i pouzdanosti takvih sustava. Kvaliteta i pouzdanost sustava za udaljeno izvršavanje programskog kôda dolazi do izražaja pri intenzivnom višekorisničkom opterećenju koje, u kontekstu sustava za udaljeno izvršavanje programskog kôda, predstavljaju zahtjevi za izvršavanje programskog kôda koje sustav dobiva kroz \textit{web} aplikacijsko sučelje.
+
+Ovaj rad predstavlja prvi radni okvir za ocjenu kvalitete i pouzdanosti usluge koju nude sustavi za udaljeno izvršavanje programskog kôda. Ovaj rad također predstavlja i aplikaciju Hélory\footnote{Sv.\ Ivo Hélory (1253.\ -- 1303.), po kome je aplikacija dobila ime, zaštitnik je, između ostalog i sudaca \engl{judges}.} koja implementira predstavljeni radni okvir za ocjenu kvalitete i pouzdanosti za tri sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0. Razvijen u obliku komandno-linijske aplikacije, Hélory nudi jednostavno pokretanje višekorisničkog opterećenja na željenom sustavu, a nakon eksperimenta Hélory će generirati i pohraniti izvještaj o pokrenutom eksperimentu koji sadrži detaljne informacije o svakom pojedinom zahtjevu za izvršavanje i grafički prikaz metrika od interesa za ocjenu kvalitete i pouzdanosti usluge.
+
+U poglavlju \ref{chap:ojs} opisana je arhitektura OJ ekosustava, dan je pregled slučajeva uporabe i opisana je problematika udaljenog izvršavanja programskog kôda. Dodatno poglavlje \ref{chap:ojs} donosi formalnu definiciju OCES-a kroz funkcionalne i nefunkcionalne zahtjeve, i zatim daje pregled sustava koje Hélory podržava. Poglavlje \ref{chap:analysis} predstavlja radni okvir za ocjenu kvalitete i pouzdanosti usluge OCES-a, dok poglavlje \ref{chap:helory} daje pregled funkcionalnosti razvijene aplikacije Hélory. U poglavlju \ref{chap:use} pokazuje se primjer korištenja aplikacije Hélory i analize performansi sustava Piston i Judge0. Konačno, poglavlje \ref{chap:future} daje smjernice za budući razvoj radnog okvira i aplikacije Hélory.
+
 
 \chapter{Sustavi za udaljeno ocjenjivanje}
+\label{chap:ojs}
 Sustav za udaljeno ocjenjivanje (engl.\ \textit{online judge}, krat.\ \textit{OJ}) je sustav za evaluaciju korisničkog programskog kôda na unaprijed zadanom skupu primjera za ispitivanje. Sustav za udaljeno ocjenjivanje koristi se u različitim slučajevima uporabe \engl{use-cases} kao što su npr.: natjecateljsko programiranje \engl{competitive programming}, e-učenje \engl{e-learning}, i u regrutiranju i procesu zapošljavanja \engl{recruitment} softverskih inženjera. \citep{9245310}
 
 \textit{Web} aplikacije razvijene za svaki pojedini slučaj uporabe zapravo su specijalizirani sustavi za udaljeno ocjenjivanje (slika \ref{fig:oj-ecosystem}).
@@ -232,6 +251,7 @@ Sustav Judge0 podržava prevođenje i izvršavanje programa s preko 60 različit
 Bogata dokumentacija\footnote{https://ce.judge0.com} \textit{web} aplikacijskog sučelja omogućava razvijateljima da brzo i lako upoznaju sve funkcionalnosti ovog sustava koji sadrži sve funkcionalnosti koje nude sustavi Piston i Sphere Engine.
 
 \chapter{Analiza performansi}
+\label{chap:analysis}
 Analiza performansi sustava za udaljeno izvršavanje programskog kôda se ne spominje u literaturi budući da se tek od \citep{9245310} sustavi za udaljeno izvršavanje programskog kôda razmatraju kao zasebne komponente u arhitekturi sustava za udaljeno ocjenjivanje.
 \citep{drung2011enhance} razmatraju optimizaciju performansi postojećeg sustava za udaljeno ocjenjivanje, međutim, njihovo istraživanje usmjereno je u ugađanje opcija operacijskog sustava i algoritama raspoređivanja zadataka za izvršavanje.
 
@@ -365,24 +385,117 @@ Standardni ulaz ovog scenarija isti je kao i standardni ulaz scenarija mrežnog 
 Vremenska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(n^2)$, a memorijska složenost je $\mathcal{O}(n)$, gdje je $n$ duljina ulaznog niza brojeva, uz ogradu da $n$ ne može biti veći od 20000.
 
 \section{Strategije izvršavanja}
-Sync vs async.
+Zahtjev za izvršavanje programskog kôda može se napraviti na dva načina: sinkrono i asinkrono. Slika \ref{fig:sync-execution} prikazuje dijagram toka sinkronog izvršavanja programskog kôda. Korisnik započinje interakciju s sustava stvarajući zahtjev za izvršavanjem, zatim sustav kao odgovor vraća korisniku rezultate izvršavanja. Budući da izvršavanje programskog kôda može trajati i po nekoliko sekundi ova strategija izvršavanja može iscrpiti poslužiteljske resurse prilikom intenzivnog višekorisničkog opterećenja.
 
-\section{Dinamika izvršavanja}
-Create order. Probes.
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/sync-execution.pdf}
+	\caption{
+		Sinkrono izvršavanje programskog kôda.
+	}
+	\label{fig:sync-execution}
+\end{figure}
+
+Asinkrono izvršavanje programskog kôda započinje na isti način kao i sinkrono - stvaranjem zahtjeva za izvršavanje, međutim, u asinkronoj strategiji sustav korisniku vraća jedinstveni identifikator zahtjeva kojeg je korisnik napravio. Nakon toga korisnik treba posebnim zahtjevom provjeravati status svog zahtjeva dok ne utvrdi da je izvršavanje završilo.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/async-execution.pdf}
+	\caption{
+		Asinkrono izvršavanje programskog kôda.
+	}
+	\label{fig:sync-execution}
+\end{figure}
 
 \section{Metrike za analizu performansi}
-\subsection{Uspješnost izvršavanja}
-success rate.
+Radni okvir analize performansi sustava za udaljeno izvršavanje programskog kôda razmatra dvije metrike: uspješnost izvođenja i vrijeme obrade.
 
-\subsection{Vrijeme obrade}
-turn around time.
+\subsubsection{Uspješnost izvršavanja}
+Budući da prilikom intenzivnog višekorisničkog opterećenje može doći do preopterećenja sustava, zahtjevi za izvršavanje mogu biti odbačeni ili može doći do greške uslijed prevođenja ili izvršavanja zbog manjka slobodnih resursa na poslužitelju sustava. Ovo su samo neki od brojnih razloga zbog čega sustav može neuspješno izvršiti programski kôd korisnika i razmatranje svakog pojedinog razloga izlazi iz opsega ovog rada. Također, za potpuno razumijevanje neuspješnog izvršavanja potrebno je imati uvid u sustav koji se analizira, međutim, radni okvir analize koju ovaj rad predlaže podrazumijeva tzv.\ \textit{black box} pristup.
 
-\chapter{Sustav Hélory}
+\subsubsection{Vrijeme obrade}
+Vrijeme obrade \engl{turn around time} najvažnija je metrika iz perspektive krajnjeg korisnika. Iz perspektive krajnjeg korisnika sustava za udaljeno ocjenjivanje vrijeme obrade je vrijeme koje je potrebno da korisnik na zaslonu dobije rezultat izvršavanja svog programa. Budući da sustav za udaljeno izvršavanje programskog kôda korisnici ne koriste direktno, nego neposredno preko sustava za udaljeno ocjenjivanje, korisnikom sustava za udaljeno izvršavanje programskog kôda smatra se sustav za udaljeno ocjenjivanje.
+
+Vrijeme obrade programskog kôda definira se kao proteklo vrijeme između trenutka kada je korisnik zahtjevom za izvršavanjem poslao sve podatke potrebne sustavu, do trenutka kada je korisnik ustanovio da je izvršavanje završilo.
+
+\chapter{Aplikacija Hélory}
+\label{chap:helory}
+Aplikacija Hélory prva je specijalizirana aplikacija za višekorisničko opterećenje i analizu performansi sustava za udaljeno izvršavanje programskog kôda. Komandno-linijsko sučelje aplikacije Hélory omogućuje korisnicima pokretanje višekorisničkog opterećenja na tri različita sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0.
+
+Kao rezultat eksperimentalnog višekorisničkog opterećenja Hélory u tekućem direktoriju pohranjuje izvještaj u HTML formatu koji sadrži sve relevantne informacije o eksperimentu, grafički prikaz metrika od interesa i sirove podatke u formatu JSON prikupljene za vrijeme eksperimenta koji naknadno mogu biti dodatno iskorišteni.
+
 \section{Korištene tehnologije}
-Golang.
+Hélory je razvijen u statičkom i tipiziranom programskom jeziku Go \citep{donovan2015go} koji se brzo prevodi u strojni kôd i kojeg odlikuje ekspresivnost, preciznost, jednostavnost i čistoća u pisanju programskog kôda, i jednostavnost pisanja konkuretnih programa koji efikasno iskorištavaju resurse domaćina. Izvještaj kojeg generira Hélory nakon eksperimenta napisan je u opisnom jeziku HTML uz korištenje CSS-a i JavaScripta, a za prikaz metrika od interesa u grafičkom obliku koristi se biblioteka Chart.js\footnote{https://github.com/chartjs/Chart.js}.
 
-\section{Prikupljanje metrika za analizu performansi}
-timestamps prije svakog i nakon svakog zahtjeva.
+\section{Prikupljanje podataka}
+Isječak \ref{lst:json-report} prikazuje primjer sirovih podataka u formatu JSON koje je sustav Hélory prikupio za vrijeme eksperimenta. Značenje svakog pojedinog ključa je sljedeće:
+\begin{itemize}
+    \item[$\bullet$] \lstinline{id} - jedinstveni identifikator,
+    \item[$\bullet$] \lstinline{name} - ime eksperimenta,
+    \item[$\bullet$] \lstinline{started_at} - vremenski trenutak početka,
+    \item[$\bullet$] \lstinline{finished_at} - vremenski trenutak završetka,
+    \item[$\bullet$] \lstinline{scenario} - korišteni scenarij,
+    \item[$\bullet$] \lstinline{scenario_description} -- opis korištenog scenarija,
+    \item[$\bullet$] \lstinline{language} - korišteni programski jezik,
+    \item[$\bullet$] \lstinline{endpoint} - ime korištenog sustava za udaljeno izvršavanje programskog kôda,
+    \item[$\bullet$] \lstinline{endpoint_url} - poveznica na korišteni sustav za udaljeno izvršavanje programskog kôda,
+    \item[$\bullet$] \lstinline{strategy} - korištena strategija izvršavanja programskog kôda,
+    \item[$\bullet$] \lstinline{experiment_type} - vrsta višekorisničkog opterećenja,
+    \item[$\bullet$] \lstinline{experiment_configuration} - konfiguracijske opcije specifične za vrstu višekorisničkog opterećenja, i
+    \item[$\bullet$] \lstinline{executions} - niz rezultata izvršavanja programskog kôda.
+\end{itemize}
+
+Jedinstveni identifikator eksperimenta \lstinline{id} dodjeljuje se eksperimentu na temelju 
+\pagebreak
+
+\begin{lstlisting}[
+    caption={Podaci o izvršavanju prikupljeni sustavom Hélory.},
+    label={lst:json-report},
+]
+{ 
+  "id": "2021-06-22T23:43:31+02:00-deterministic-cpu ...",
+  "name": "CPU Intensive in C++ via Judge0 CE with ...",
+  "started_at": "2021-06-22T23:43:31.863526+02:00",
+  "finished_at": "2021-06-22T23:43:41.749487+02:00",
+  "scenario": "CPU Intensive",
+  "scenario_description": "Find median of 20k integers ...",
+  "language": "C++",
+  "endpoint": "Judge0 CE",
+  "endpoint_url": "https://ce.judge0.com",
+  "strategy": "async",
+  "experiment_type": "deterministic",
+  "experiment_configuration": { "users": "2", "wait": true },
+  "executions": [{
+      "success": true,
+      "started_at": "2021-06-22T23:43:31.863754+02:00",
+      "finished_at": "2021-06-22T23:43:41.749159+02:00",
+      "order_started_at": "2021-06-22T23:43:31.864903+02:00",
+      "order_sent_at": "2021-06-22T23:43:32.142372+02:00",
+      "order_finished_at": "2021-06-22T23:43:33.968738+02:00",
+      "probes_started_at": [
+        "2021-06-22T23:43:35.968855+02:00",
+        "2021-06-22T23:43:38.457406+02:00"
+      ], "probes_finished_at": [
+        "2021-06-22T23:43:37.45341+02:00",
+        "2021-06-22T23:43:39.653258+02:00"
+      ]
+    }, {
+      "success": true,
+      "started_at": "2021-06-22T23:43:31.863732+02:00",
+      "finished_at": "2021-06-22T23:43:39.666589+02:00",
+      "order_started_at": "2021-06-22T23:43:31.864981+02:00",
+      "order_sent_at": "2021-06-22T23:43:32.142418+02:00",
+      "order_finished_at": "2021-06-22T23:43:33.972937+02:00",
+      "probes_started_at": [
+        "2021-06-22T23:43:35.973006+02:00"
+      ], "probes_finished_at": [
+        "2021-06-22T23:43:37.453396+02:00"
+      ]
+    }]
+}
+\end{lstlisting}
+
+\pagebreak
 
 \section{Pregled komandno-linijskog sučelja}
 jednostavno sučelje s mnogo opcija.
@@ -401,10 +514,12 @@ jednostavno sučelje s mnogo opcija.
 \section{Pregled sučelja grafičkih rezultata}
 
 \chapter{Primjer korištenja sustava Hélory}
-\section{Analiza performansi sustava Judge0}
+\label{chap:use}
 \section{Analiza performansi sustava Piston}
+\section{Analiza performansi sustava Judge0}
 
 \chapter{Budući razvoj}
+\label{chap:future}
 
 \chapter{Zaključak}
 
