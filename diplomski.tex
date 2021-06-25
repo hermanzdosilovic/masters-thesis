@@ -53,26 +53,228 @@ Budući da se sustavi za udaljeno izvršavanje programskog kôda u literaturi ra
 
 Ovaj rad predstavlja prvi radni okvir za ocjenu kvalitete i pouzdanosti usluge koju nude sustavi za udaljeno izvršavanje programskog kôda. Ovaj rad također predstavlja i aplikaciju Hélory\footnote{Sv.\ Ivo Hélory (1253.\ -- 1303.), po kome je aplikacija dobila ime, zaštitnik je, između ostalog i sudaca \engl{judges}.} koja implementira predstavljeni radni okvir za ocjenu kvalitete i pouzdanosti za tri sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0. Razvijen u obliku komandno-linijske aplikacije, Hélory nudi jednostavno pokretanje višekorisničkog opterećenja na željenom sustavu, a nakon eksperimenta Hélory će generirati i pohraniti izvještaj o pokrenutom eksperimentu koji sadrži detaljne informacije o svakom pojedinom zahtjevu za izvršavanje i grafički prikaz metrika od interesa za ocjenu kvalitete i pouzdanosti usluge.
 
-U poglavlju \ref{chap:ojs} opisana je arhitektura OJ ekosustava, dan je pregled slučajeva uporabe i opisana je problematika udaljenog izvršavanja programskog kôda. Dodatno poglavlje \ref{chap:ojs} donosi formalnu definiciju OCES-a kroz funkcionalne i nefunkcionalne zahtjeve, i zatim daje pregled sustava koje Hélory podržava. Poglavlje \ref{chap:analysis} predstavlja radni okvir za ocjenu kvalitete i pouzdanosti usluge OCES-a, dok poglavlje \ref{chap:helory} daje pregled funkcionalnosti razvijene aplikacije Hélory. U poglavlju \ref{chap:use} pokazuje se primjer korištenja aplikacije Hélory i analize performansi sustava Piston i Judge0. Konačno, poglavlje \ref{chap:future} daje smjernice za budući razvoj radnog okvira i aplikacije Hélory.
+U poglavlju \ref{chap:oj-ecosystem} opisana je arhitektura OJ ekosustava, dan je pregled slučajeva uporabe \engl{use-cases} i opisana je problematika udaljenog izvršavanja programskog kôda. Dodatno, poglavlje \ref{chap:oj-ecosystem} donosi formalnu definiciju OCES-a kroz funkcionalne i nefunkcionalne zahtjeve, i daje pregled sustava koje Hélory podržava. Poglavlje \ref{chap:analysis} predstavlja radni okvir za ocjenu kvalitete i pouzdanosti usluge OCES-a, dok poglavlje \ref{chap:helory} daje pregled funkcionalnosti razvijene aplikacije Hélory. U poglavlju \ref{chap:use} pokazuje se primjer korištenja aplikacije Hélory u analizi performansi sustava Piston i Judge0. Konačno, poglavlje \ref{chap:future} daje smjernice za budući razvoj radnog okvira i aplikacije Hélory.
 
-
-\chapter{Sustavi za udaljeno ocjenjivanje}
-\label{chap:ojs}
-Sustav za udaljeno ocjenjivanje (engl.\ \textit{online judge}, krat.\ \textit{OJ}) je sustav za evaluaciju korisničkog programskog kôda na unaprijed zadanom skupu primjera za ispitivanje. Sustav za udaljeno ocjenjivanje koristi se u različitim slučajevima uporabe \engl{use-cases} kao što su npr.: natjecateljsko programiranje \engl{competitive programming}, e-učenje \engl{e-learning}, i u regrutiranju i procesu zapošljavanja \engl{recruitment} softverskih inženjera. \citep{9245310}
-
-\textit{Web} aplikacije razvijene za svaki pojedini slučaj uporabe zapravo su specijalizirani sustavi za udaljeno ocjenjivanje (slika \ref{fig:oj-ecosystem}).
+\chapter{Arhitektura ekosustava sustava za udaljeno ocjenjivanje}
+\label{chap:oj-ecosystem}
+Sustavi za udaljeno ocjenjivanje dio su arhitekture OJ ekosustava prikazane na slici \ref{fig:oj-ecosystem}, a koja započinje zaštićenim okruženjem \engl{sandbox} koje osigurava sigurno prevođenje i izvršavanje programskog kôda korisnika na poslužitelju, i završava specijaliziranim izvedbama sustava za udaljeno ocjenjivanje koji se koriste u raznim slučajevima uporabe. Ovo poglavlje daje pregled svake komponente arhitekture OJ ekosustava i motivaciju za njezino korištenje.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=8cm]{images/OJ_ecosystem.pdf}
+	\includegraphics[width=0.75\textwidth]{images/Ekosustav.pdf}
 	\caption{
-		Arhitektura OJ ekosistema. \citep{9245310}
+		Arhitektura OJ ekosustava. \citep{9245310}
 	}
 	\label{fig:oj-ecosystem}
 \end{figure}
 
-Detaljnu klasifikaciju i pregled sustava za udaljeno ocjenjivanje opisuje \citep{wasik2018survey} i njihova zajednička funkcionalnost je procjena \engl{assessment} programskog kôda kojeg korisnik prilaže kao rješenje zadataka, a ocjena \engl{score} programskog kôda koristi se u svrhu koja ovisi o slučaju uporabe.
+\pagebreak
 
+\section{Zaštićeno okruženje}
+Sustavi za udaljeno ocjenjivanje koriste se za evaluaciju programskog kôda korisnika na unaprijed zadanom skupu primjera za ispitivanje, što povlači pitanje gdje će se programski kôd korisnika prevesti i izvršiti budući da se bez toga ne može ocijeniti njegovo rješenje. Najjednostavnije bi bilo da korisnik samostalno prevede i izvrši svoj program, i da zatim u sustav postavi rješenja koja je dobio. Ovakav pristup bio bi u redu za napredne korisnike koji znaju instalirati i koristiti odgovarajući prevoditelj za odabrani programski jezik, međutim, za početnike bi ovakav pristup rezultirao jako lošim korisničkim iskustvom. Ovo naime nije jedini argument zašto nije dobro da korisnik samostalno prevodi, izvršava i postavlja rješenja svojih programa. Ispitni primjeri trebaju ostati nepoznati korisniku kako ih ne bi zloupotrijebio. Korisnik ne treba znati očekivani izlaz \engl{expected output} svog programa da bi ga zloupotrijebio, jer je za neke zadatke dovoljno imati standardni ulaz \engl{standard input} iz kojeg se lako dobije očekivani izlaz. Već se samo sa ovim snažno opravdanim zahtjevom može zaključiti da je programski kôd korisnika potrebno izvršiti na poslužitelju kojem korisnik nema pristup. Ovakav zahtjev otvara novi spektar problema koje je potrebno riješiti i koji su opisani u \citep{kurnia2001online}.
+
+Pokretanje programskog kôda korisnika na udaljenom poslužitelju nameće izazov da se korisnikov program mora pokrenuti u zaštićenom okruženju kako ne bi negativno utjecao na rad poslužitelja i ostalih procesa. Postoje razne tehnike opisane u \citep{yi2014comparison} koje se koriste za izvršavanje programskog kôda u zaštićenom okruženju, i u kontekstu sustava za udaljeno ocjenjivanje od zaštićenog okruženja očekujemo sljedeće funkcionalnosti:
+\begin{itemize}
+    \item[$\bullet$] inicijalizaciju zaštićenog okruženja,
+    \item[$\bullet$] mogućnost prenošenja programskog kôda korisnika u zaštićeno okruženje,
+    \item[$\bullet$] prevođenje i izvršavanje programskog kôda u zaštićenom okruženju uz navođenje procesorskih i memorijskih ograničenja,
+    \item[$\bullet$] prikupljanje standardnog izlaza \engl{standard output} programa i ostalih meta podatka o izvršavanju, i
+    \item[$\bullet$] čišćenje \engl{cleanup} zaštićenog okruženja.
+\end{itemize}
+
+Sustavi Judge0 i Piston, o kojima će biti riječ nešto kasnije u ovom poglavlju, koriste Isolate \citep{marevs2012new} i Docker \citep{merkel2014docker} kao zaštićena okruženja za prevođenje i izvršavanje programskog kôda. Isolate i Docker oboje koriste kontrolne grupe \engl{control groups}, značajke sustava Linux koje omogućuju definiranje resursnih ograničenja pojedinog procesa. Odabir korištenja jednog, odnosno drugog zaštićenog okruženja ovisi, između ostalog, o preferencijama razvojnih inženjera.
+
+Važnost korištenja zaštićenog okruženja koje osigurava da programski kôd korisnika ne šteti radu poslužitelja i ostalih procesa prikazuju isječci \ref{lst:infinite-compilation} i \ref{lst:fork-bomb} napisani u programskom jeziku C. 
+
+Isječak \ref{lst:infinite-compilation} prikazuje ispravan C program koji uključuje uređaj pseudo-slučajnih brojeva sustava Linux. Budući da uređaj generira beskonačni slijed pseudo-slučajnih brojeva, uključivanje tog uređaja dovodi do beskonačnog vremena prevođenja. Ukoliko više korisnika napravi zahtjev za izvršavanjem ovakvog ili sličnog programa, na poslužitelju brzo dolazi do iscrpljivanja procesorskih i memorijskih resursa i time postaje neupotrebljiv. Iz ovog je jednostavnog primjera jasno da je proces prevođenja potrebno pokrenuti u zaštićenom okruženju koje će imati ograničene procesorske i memorijske resurse.
+
+\begin{lstlisting}[
+    caption={Ispravan C program s beskonačnim vremenom prevođenja.},
+    label={lst:infinite-compilation},
+    language=c
+]
+#include </dev/random>
+int main() {
+    return 0;
+}
+\end{lstlisting}
+
+Izoliranje izvršavanja programskog kôda korisnika još je važnije od izolacije prevođenja, budući da je za zloupotrebu neizoliranog procesa prevođenja potrebno nešto više znanja o prevodiocima i programskom jeziku koji se koristi. Isječak \ref{lst:fork-bomb} prikazuje C program koji će beskonačno mnogo puta stvoriti novi proces, i svaki novostvoreni proces napravit će isto. Budući da se broj novostvorenih procesa može opisati eksponencijalnom funkcijom $f(x) = 2^x$, gdje je $x$ broj ponavljanja petlje, ovaj program naziva se \textit{fork bomb}. Dovoljno je da jedan korisnik pokrene ovakav program da se na poslužitelju iscrpe procesorski i memorijski resursi koji će ga učiniti neupotrebljivim.
+
+\begin{lstlisting}[
+    caption={C program s beskonačnim grananjem novih procesa.},
+    label={lst:fork-bomb},
+    language=c
+]
+#include <unistd.h>
+int main() {
+    while(1) {
+        fork();
+    }
+    return 0;
+}
+\end{lstlisting}
+
+Oba isječka potvrđuju da je u sustavima za udaljeno ocjenjivanje nužno koristiti zaštićeno okruženje koja će prevesti i izvršiti programski kôd svakog korisnika. 
+
+Gledajući iz perspektive sustava za udaljeno ocjenjivanje svaki programski kôd korisnika smatra se opasnim za poslužitelj, stoga se u kontekstu sustava za udaljeno ocjenjivanje govori o nepouzdanom programskom kôdu \engl{untrusted source code} kojeg je potrebno prevesti i izvršiti.
+
+\section{Modul za izvršavanje programskog kôda}
+Modul za izvršavanje programskog kôda (engl.\ \textit{code execution engine}, krat.\ \textit{CEE}) iduća je komponenta u arhitekturi OJ ekosustava koja koristi zaštićeno okruženje za prevođenje i izvršavanje programskog kôda, i koja zatim obrađuje meta podatke o prevođenju i izvršavanju koje generira zaštićeno okruženje. Slika \ref{fig:cee-and-sandbox} prikazuje dijagram toga interakcije između modula za izvršavanje programskog kôda i zaštićenog okruženja.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.65\textwidth]{images/CEE i zaštićeno okruženje.pdf}
+	\caption{
+		Interakcija modula za izvršavanje programskog kôda s zaštićenim okruženjem.
+	}
+	\label{fig:cee-and-sandbox}
+\end{figure}
+
+\pagebreak
+
+\section{Sustav za udaljeno izvršavanje programskog kôda}
+Sustav za udaljeno izvršavanje programskog kôda je sustav koji nudi \textit{web} aplikacijsko sučelje \engl{web API} za prevođenje i izvršavanje proizvoljnog programskog kôda. Arhitekturalni prikaz na slici \ref{fig:oj-ecosystem} izdvaja sustav za udaljeno izvršavanje programskog kôda kao zasebnu komponentu na koju se oslanjaju sustav za udaljeno ocjenjivanje, aplikacija za udaljeno programiranje, a zatim i specijalizirane izvedbe sustava za udaljeno ocjenjivanje razvijene za specifičan slučaj uporabe. Sustav za udaljeno izvršavanje programskog kôda najčešće je strogo povezan i zavisan o ostatku komponenata u arhitekturu sustava za udaljeno ocjenjivanje \citep{9245310}, međutim, u ovom radu razmatraju se oni sustavi za udaljeno izvršavanje programskog kôda koji su neovisni o ostatku arhitekture koja se na njih oslanja.
+
+Slika \ref{fig:oces-architecture} prikazuje dijagram komponenti sustava za udaljeno izvršavanje programskog kôda koji preko \textit{web} aplikacijskog sučelja nudi uslugu izvršavanja programskog kôda (lijeva priključnica na slici \ref{fig:oces-architecture}) koju koriste sustav za udaljeno ocjenjivanje ili aplikacije za udaljeno programiranje. Putem OCES međuopreme \engl{middleware}, zahtjev za izvršavanje programskog kôda dolazi do modula za izvršavanje programskog kôda kojih u sustavu može biti više kako bi se prilikom intenzivnog višekorisničkog opterećenja zahtjevi za izvršavanje efikasnije obavili. Način izvedbe OCES međuopreme ovisi o pojedinom sustavu za udaljeno izvršavanje programskog kôda kao što se npr.\ međuoprema sustava Judge0 sastoji od PostgreSQL baze podataka koja pohranjuje sve zahtjeve za izvršavanje programskog kôda i rezultate prevođenja i izvršavanja, i Redis baze podataka koja se koristi kao red poslova \engl{job queue} \citep{9245310}.
+
+Formalna definicija sustava za udaljeno izvršavanje programskog kôda dana je u \citep{9245310} kroz funkcionalne i nefunkcionalne zahtjeve. Funkcionalni zahtjevi podijeljeni su u nužne i dovoljne, odnosno na zahtjeve koje sustav nužno mora ispuniti i dodatne neobavezne zahtjeve. Nefunkcionalni zahtjevi su također neobavezni, ali preporučeni.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/Arhitektura OCES-a.pdf}
+	\caption{
+	    Dijagram komponenti sustava za udaljeno izvršavanje programskog kôda.
+	}
+	\label{fig:oces-architecture}
+\end{figure}
+
+\pagebreak
+
+\subsubsection{Funkcionalni zahtjevi}
+Sustav za udaljeno izvršavanje programskog kôda \textbf{mora} pružiti:
+\begin{itemize}
+    \item[$\bullet$] dobro dokumentirano \textit{web} aplikacijsko sučelje,
+    \item[$\bullet$] podršku za prevođenje i izvršavanje proizvoljnog programskog kôda za barem jedan programski jezik,
+    \item[$\bullet$] izvršavanje u zaštićenom okruženju s pretpostavljenim procesorskim i memorijskim ograničenjima,
+    \item[$\bullet$] podršku za navođenje proizvoljnog standardnog ulaza, i
+    \item[$\bullet$] podršku za dohvat rezultata izvršavanja programa koji sadrži barem standardni izlaz programa.
+\end{itemize}
+
+Dodatno, ali neobavezno, sustav za udaljeno izvršavanje programskog kôda \textbf{može} pružiti podršku za:
+\begin{itemize}
+    \item[$\bullet$] navođenje dodatnih opcija prevodioca,
+    \item[$\bullet$] navođenje komandno-linijskih argumenata,
+    \item[$\bullet$] navođenje resursnih ograničenja poput npr.\ procesorskih i memorijskih ograničenja,
+    \item[$\bullet$] inicijalizaciju zaštićenog okruženja s dodatnim datotekama,
+    \item[$\bullet$] dohvat detaljnih meta podataka o izvršavanju programa (npr.\ vrijeme izvođenja programa ili sadržaj standardnog izlaza za pogreške \engl{standard error}),
+    \item[$\bullet$] skupne zahtjeve za izvršavanje,
+    \item[$\bullet$] višestruke standardne ulaze, i
+    \item[$\bullet$] autentifikaciju.
+\end{itemize}
+
+Čim više funkcionalnih zahtjeva sustav ispunjava tim više slučajeva uporabe može zadovoljiti. \citep{9245310}
+
+\subsubsection{Nefunkcionalni zahtjevi}
+Preporuča se da sustav za udaljeno izvršavanje programskog kôda bude:
+\begin{itemize}
+    \item[$\bullet$] skalabilan,
+    \item[$\bullet$] konfigurabilan,
+    \item[$\bullet$] siguran,
+    \item[$\bullet$] lako upogonljiv,
+    \item[$\bullet$] efikasan,
+    \item[$\bullet$] otporan,
+    \item[$\bullet$] proširiv, i
+    \item[$\bullet$] robustan.
+\end{itemize}
+
+Čim više nefunkcionalnih zahtjeva sustav ispunjava tim ga je lakše integrirati u sustav specifično izveden za pojedini slučaj uporabe \citep{9245310}. Skalabilnost i efikasnost sustava za udaljeno izvršavanje programskog kôda dolazi do izražaja prilikom izrazitog višekorisničkog opterećenja kada krajnji korisnici neposredno preko sustava za udaljeno ocjenjivanje stvaraju zahtjeve za izvršavanje. Tada se od sustava za udaljeno izvršavanje programskog kôda očekuje da neovisno o broju zahtjeva efikasno izvrši programski kôd korisnika i vrati rezultate izvršavanja sustavu za udaljeno ocjenjivanje jer će u protivnom krajnje korisničko iskustvo biti srozano dugim vremenom čekanja. Konfigurabilnost i proširivost sustava za udaljeno izvršavanje programskog kôda omogućuje razvojnim inženjerima da sustav prilagode svojim zahtjevima prilikom razvoja sustava za određeni slučaj uporabe. Laka upogonljivost sustava za udaljeno izvršavanje programskog kôda omogućava razvojnim inženjerima da brzo napreduju u razvoju sustava za određeni slučaj uporabe. Sigurnost sustava za udaljeno izvršavanje programskog kôda uvelike ovisi načinu na koji sustav iskorištava funkcionalnosti zaštićene okoline i koristi li ju uopće. Od sustava se očekuje da niti jedan programski kôd ne naruši sigurnost i integritet poslužitelja. Ako se i dogodi da neki programski kôd uzrukuje neuobičajeno ponašanje, od sustava se očekuje da bude otporan i robustan na unutarnje pogreške koje se mogu dogoditi i da neovisno o njima vrati korisniku rezultat izvođenja.
+
+U nastavku ove cjeline dan je pregled tri različita sustava za udaljeno izvršavanje programskog kôda koje podržava aplikacija Hélory.
+
+\subsection{Sustav Sphere Engine}
+Sustav za udaljeno izvršavanje programskog kôda Sphere Engine razvila je Poljska tvrtka Sphere Research Labs 2008.\ godine. Sphere Engine je jedan od vodećih komercijalnih sustava za udaljeno izvršavanje programskog kôda kojeg koristi više od 1000 institucija u 180 država. Jedna od najpoznatijih \textit{web} aplikacija koja koristi Sphere Engine je SPOJ \citep{SPOJ} koju je razvila ista tvrtka, a na kojoj korisnici mogu rješavati razne problemske zadatke iz domene natjecateljskog programiranja. Osim SPOJ-a, CodeChef \citep{CodeChef} također koristi Sphere Engine za udaljeno izvršavanje programskog kôda.
+
+Budući da je Sphere Engine zatvoreni komercijalni sustav, nisu dostupne informacije o njegovoj izvedbi, niti o tome u kojim tehnologijama je razvijen.
+
+U svrhu ovog rada dovoljno je spomenuti da sustav omogućuje prevođenje i izvršavanje programskog kôda u mnoštvo programskih jezika i da nudi bogatu dokumentaciju \textit{web} aplikacijskog sučelja.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Sphere Engine Logo.png}
+	\caption{
+	    Vizualni identitet sustava Sphere Engine. \citep{SphereEngine}
+	}
+\end{figure}
+
+\subsection{Sustav Piston}
+Sustav za udaljeno izvršavanje programskog kôda Piston \citep{Piston} je sustav otvorenog kôda koji je dostupan na platformi GitHub. Razvijen je i koristi se u edukativne svrhe zajednice koju vodi autor projekta.
+
+Kao zaštićeno okruženje u kojoj se izvršava programski kôda korisnika, sustav Piston koristi Docker i nudi oskudnu dokumentaciju \textit{web} aplikacijskog sučelja, međutim, kao i Sphere Engine, podržava mnoštvo programskih jezika koji se mogu koristiti. Zajednica koja razvija sustav Piston također je razvila i komandno-linijsku aplikaciju koja se povezuje sa sustavom i tako korisnicima omogućava da iz ljuske \engl{shell} pokrenu proizvoljni programski kôd, dobivajući tako privid da se njihov program izvršio izravno na njihovom računalu.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.45\textwidth]{images/Piston Logo.png}
+	\caption{
+	    Vizualni identitet sustava Piston. \citep{Piston}
+	}
+\end{figure}
+
+\pagebreak
+
+\subsection{Sustav Judge0}
+Razvoj sustava Judge0 započet je 22.\ kolovoza 2016.\ godine na inicijativu autora ovog rada. Cilj razvoja sustava Judge0 bio je izgradnja novog, robustnog, skalabilnog i lako uporabljivog sustava za udaljeno izvršavanje programskog kôda koji se može jednostavno integrirati u razne \textit{web} aplikacije koje trebaju funkcionalnost izvršavanja programskog kôda. Razvijen je u programskom jeziku Ruby koristeći radni okvir Ruby on Rails, a kao zaštićeno okruženje koristi Isolate \citep{marevs2012new} koji se također koristi u popularnom sustavu za udaljeno ocjenjivanje CMS \citep{maggiolo2012introducing}. Sustav CMS koristio se na najvećim međunarodnim natjecanjima iz natjecateljskog programiranja poput informatičke olimpijade (IOI) i srednjoeuropske informatičke olimpijade (CEOI) \citep{CMSWeb}. Akademskoj zajednici sustav Judge0 napokon je formalno predstavljen 2020.\ godine radom \citep{9245310}.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.65\textwidth]{images/Judge0 Logo.png}
+	\caption[]{
+	    Vizualni identitet sustava Judge0.\footnotemark
+	}
+\end{figure}
+
+\footnotetext{Vizualni identitet sustava Judge0 osmislio je i izradio Emanuel Loborec.}
+
+U vrijeme pisanja ovog rada, javna instanca sustava Judge0 izvršila je preko 12,7 milijuna programa korisnika diljem svijeta koji su sustav Judge0 integrirali u svoje proizvode. Dodatno, u vrijeme pisanja ovog rada, zabilježeno je preko 200 aktivnih instanci sustava Judge0 kojeg su razne organizacije pokrenule na svojim poslužiteljima. 
+
+Od akademske godine 2018./2019. sustav Judge0 aktivno se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu kao integracijski dio \textit{web} aplikacije Edgar \citep{mekterovic2020building}. Time je sustav Judge0, neposredno preko \textit{web} aplikacije Edgar, koristilo preko 3000 studenata kroz nekoliko predmeta.
+
+Sustav Judge0 odlikuje se prije svega bogatom dokumentacijom \textit{web} aplikacijskog sučelja koje omogućuje jednostavno korištenje sustava s mnoštvo konfiguracijskih opcija. Obilje funkcionalnosti koje nudi Judge0 omogućuje razvojnim inženjerima laku integraciju s drugim sustavima raznih slučajeva uporabe.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Judge0 Clients.png}
+	\caption{
+	    Vizualni identiteti organizacija koje koriste sustav Judge0. \citep{Judge0Web}
+	}
+	\label{fig:judge0-clients}
+\end{figure}
+
+\pagebreak
+
+\section{Sustav za udaljeno ocjenjivanje}
+Formalno, sustav za udaljeno ocjenjivanje \citep{wasik2018survey} definira kao udaljenu uslugu \engl{online service} koja u oblaku \engl{cloud} izvodi barem jednu od sljedećih faza:
+\begin{itemize}
+    \item podnošenje zahtjeva za izvršavanje programskog kôda \engl{submission},
+    \item procjena podnesenoga programskog kôda \engl{assessment},
+    \item ocjenjivanje podnesenoga programskog kôda \engl{scoring}.
+\end{itemize}
+
+Podnošenje zahtjeva za izvršavanje programskog kôda podrazumijeva prihvaćanje programskog kôda u sustav, prevođenje po potrebi i verifikaciju da je program spreman za izvršavanje. U procjeni podnesenoga programskog kôda program se pokreće za svaki ispitni primjer i provjerava se uspješnost izvođenja programa u zadanim procesorskim i memorijskim ograničenjima. Također, u istoj fazi, provjerava se standardni izlaz \engl{standard output} korisničkog programa i uspoređuje ga se s očekivanim izlazom za trenutni ispitni primjer \engl{expected output}. Konačno, u fazi ocjenjivanja, podnesenom programskom kôdu dodjeljuje se ocjena na temelju rezultata iz prethodnih faza. Tako npr.\ na ocjenu u natjecateljskom programiranju može utjecati vrijeme koje je bilo potrebno natjecatelju da riješi pojedini zadatak. Što kasnije natjecatelj riješi ispravno zadatak to će manje bodova dobiti čak i ako su mu svi ispitni primjeri ispravni uz zadana vremenska i memorijska ograničenja.
+
+\section{Aplikacija za udaljeno programiranje}
+Pored dosad nabrojanih specijaliziranih aplikacija koje se arhitekturalno oslanjaju na sustav za udaljeno ocjenjivanje (slika \ref{fig:oj-ecosystem}) postoje još i \textit{web} aplikacije za udaljeno programiranje \engl{online compilers} i \textit{web} aplikacije za udaljeno razvijanje \engl{online IDEs}. \textit{Web} aplikacija poput aplikacije Judge0 IDE \citep{Judge0IDE} u izvedbi aplikacije za udaljeno programiranje omogućuje korisniku pisanje, prevođenje i izvršavanje programskog kôda u jednom od podržanih programskih jezika (slika \ref{fig:judge0-ide-ui}). \citep{wasik2018survey} daje detaljnu usporedba ovakvih i sličnih \textit{web} aplikacija.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/judge0-ide-ui.png}
+	\caption{
+		Sučelje \textit{web} aplikacije Judge0 IDE.
+	}
+	\label{fig:judge0-ide-ui}
+\end{figure}
+
+\section{Specijalizirane izvedbe sustava za udaljeno ocjenjivanje}
 Najčešća izvedba sustava za udaljeno ocjenjivanje su \textit{web} aplikacije za natjecateljsko programiranje poput: Codeforces \citep{Codeforces}, CodeChef \citep{CodeChef} i SPOJ \citep{SPOJ} gdje se od korisnika očekuje da iz teksta zadatka prepozna i implementira algoritam i odgovarajuću strukturu podataka koji će zadovoljiti zadana vremenska i memorijska ograničenja. 
 
 Izvedba sustava za udaljeno ocjenjivanje kao \textit{web} aplikacije za e-učenje poput \textit{web} aplikacija Edgar \citep{mekterovic2020building} i CodeChum \citep{maranga2019codechum} koristi se za ocjenjivanje \engl{scoring} programskog kôda kojeg student prilaže kao rješenje zadatka iz npr.\ domaće zadaće ili provjere znanja.
@@ -117,140 +319,7 @@ Osim što pomažu u regrutaciji i procesu zapošljavanja, sustavi za udaljeno oc
 	\label{fig:leetcode-ui}
 \end{figure}
 
-Pored dosad nabrojanih specijaliziranih aplikacija koje se arhitekturalno oslanjaju na sustav za udaljeno ocjenjivanje (slika \ref{fig:oj-ecosystem}) postoje još i \textit{web} aplikacije za udaljeno programiranje \engl{online compilers} i \textit{web} aplikacije za udaljeno razvijanje \engl{online IDEs}. \textit{Web} aplikacija poput aplikacije Judge0 IDE \citep{Judge0IDE} u izvedbi aplikacije za udaljeno programiranje omogućuje korisniku pisanje, prevođenje i izvršavanje programskog kôda u jednom od podržanih programskih jezika (slika \ref{fig:judge0-ide-ui}). \citep{wasik2018survey} daje detaljnu usporedba ovakvih i sličnih \textit{web} aplikacija.
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=\textwidth]{images/judge0-ide-ui.png}
-	\caption{
-		Sučelje \textit{web} aplikacije Judge0 IDE.
-	}
-	\label{fig:judge0-ide-ui}
-\end{figure}
-
-Formalno, sustav za udaljeno ocjenjivanje \citep{wasik2018survey} definira kao udaljenu uslugu \engl{online service} koja u oblaku \engl{cloud} izvodi barem jednu od sljedećih faza:
-\begin{itemize}
-    \item podnošenje zahtjeva za izvršavanje programskog kôda \engl{submission},
-    \item procjena podnesenoga programskog kôda \engl{assessment},
-    \item ocjenjivanje podnesenoga programskog kôda \engl{scoring}.
-\end{itemize}
-
-Podnošenje zahtjeva za izvršavanje programskog kôda podrazumijeva prihvaćanje programskog kôda u sustav, prevođenje po potrebi i verifikaciju da je program spreman za izvršavanje. U procjeni podnesenoga programskog kôda program se pokreće za svaki ispitni primjer i provjerava se uspješnost izvođenja programa u zadanim vremenskim i memorijskim ograničenjima. Također, u istoj fazi, provjerava se standardni izlaz \engl{standard output} korisničkog programa i uspoređuje ga se s očekivanim izlazom za trenutni ispitni primjer \engl{expected output}. Konačno, u fazi ocjenjivanja, podnesenom programskom kôdu dodjeljuje se ocjena na temelju rezultata iz prethodnih faza. Tako npr.\ na ocjenu u natjecateljskom programiranju može utjecati vrijeme koje je bilo potrebno natjecatelju da riješi pojedini zadatak. Što kasnije natjecatelj riješi ispravno zadatak to će manje bodova dobiti čak i ako su mu svi ispitni primjeri ispravni uz zadana vremenska i memorijska ograničenja.
-
-\section{Udaljeno izvršavanje programskog kôda}
-Prethodno poglavlje, koje daje pregled svega nekoliko najčešćih slučajeva uporabe sustava za udaljeno ocjenjivanje, također daje naslutiti da se za svaki slučaj uporabe programski kôd korisnika mora negdje prevesti i izvesti. Najjednostavnije rješenje ovog problema bilo bi da korisnik samostalno prevede i izvede svoj program, i da zatim u sustav postavi rješenja koja je dobio. Ovakav pristup bio bi u redu za napredne korisnike koji znaju instalirati i koristiti odgovarajući prevoditelj za odabrani programski jezik, međutim, za početnike ovakav bi pristup bio jako loše korisničko iskustvo. Međutim, ovo nije jedini argument zašto nije dobro da korisnik samostalno prevodi, izvodi i postavlja rješenja svog programa. Ispitni primjeri trebaju ostati nepoznati korisniku kako ih korisnik ne bi zloupotrijebio. Korisnik ne treba znati očekivani izlaz svog programa da bi ga zloupotrijebio, za neke zadatke dovoljno je imati standardni ulaz \engl{standard input} iz kojeg se lako dobije očekivani izlaz. Već se samo sa ovim snažno opravdanim zahtjevom može zaključiti da je programski kôd korisnika potrebno izvršiti na poslužitelju kojem korisnik nema pristup. Ovakav zahtjev otvara novi spektar problema koje je potrebno riješiti i koji su opisani u \citep{kurnia2001online}.
-
-Pokretanje programskog kôda korisnika na udaljenom poslužitelju nameće izazov da se korisnikov program mora pokrenuti u zaštićenom okruženju \engl{sandboxed environment} kako ne bi negativno utjecao na rad poslužitelja i ostalih procesa. Postoje razne tehnike opisane u \citep{yi2014comparison} koje se za to koriste, a u kontekstu sustava za udaljeno ocjenjivanje od zaštićenog okruženja očekujemo sljedeće funkcionalnosti:
-\begin{itemize}
-    \item inicijalizaciju zaštićenog okruženja,
-    \item mogućnost prenošenja programskog kôda korisnika u zaštićeno okruženje,
-    \item prevođenje i izvršavanje programskog kôda u zaštićenom okruženju uz navedena vremenska i memorijska ograničenja,
-    \item prikupljanje izlaza programa i meta podatka o izvođenju, i
-    \item uništavanje zaštićenog okruženja.
-\end{itemize}
-
-Važnost korištenja zaštićenog okruženja koje osigurava da programski kôd korisnika ne šteti radu poslužitelja i ostalih procesa prikazuju isječci \ref{lst:infinite-compilation} i \ref{lst:fork-bomb} napisani u programskom jeziku C. 
-
-Isječak \ref{lst:infinite-compilation} prikazuje ispravan C program koji uključuje uređaj pseudo-slučajnih brojeva sustava Linux. Budući da uređaj generira beskonačni slijed pseudo-slučajnih brojeva, uključivanje tog uređaja u programu dovodi do beskonačnog vremena prevođenja. Ukoliko više korisnika napravi zahtjev za izvršavanjem ovakvog ili sličnog programa na poslužitelju, brzo dolazi do iscrpljivanja računskih i memorijskih resursa na poslužitelju i time poslužitelj postaje neupotrebljiv.
-Iz ovog je jednostavnog primjera jasno da je potrebno proces prevođenja izolirati u zaštićeno okruženje koje će imati ograničene vremenske i memorijske resurse.
-
-\begin{lstlisting}[
-    caption={Ispravan C program s beskonačnim vremenom prevođenja.},
-    label={lst:infinite-compilation},
-    language=c
-]
-#include </dev/random>
-int main() {
-    return 0;
-}
-\end{lstlisting}
-
-Izoliranje izvršavanja programskog kôda korisnika još je važnije od izolacije prevođenja, budući da je za zloupotrebu neizoliranog procesa prevođenja potrebno nešto više znanja o prevodiocima i programskom jeziku koji se koristi. Isječak \ref{lst:fork-bomb} prikazuje C program koji će beskonačno mnogo puta stvoriti novi proces, i svaki novostvoreni proces napravit će isto. Budući da se broj novostvorenih procesa može opisati eksponencijalnom funkcijom $f(x) = 2^x$, gdje je $x$ broj ponavljanja petlje, ovaj program naziva se \textit{fork bomb}. Dovoljno je da jedan korisnik pokrene ovakav program da se na poslužitelju iscrpe računski i memorijski resursi koji će ga učiniti neupotrebljivim.
-
-\begin{lstlisting}[
-    caption={C program s beskonačnim grananjem novih procesa.},
-    label={lst:fork-bomb},
-    language=c
-]
-#include <unistd.h>
-int main() {
-    while(1) {
-        fork();
-    }
-    return 0;
-}
-\end{lstlisting}
-
-Oba isječka još jednom potvrđuju da je u sustavima za udaljeno ocjenjivanje nužno koristiti zaštićenu okolinu koja će prevoditi i izvršavati programski kôd svakog korisnika. Gledajući iz perspektive sustava za udaljeno ocjenjivanje svaki programski kôd korisnika smatra se opasnim, stoga se u kontekstu sustava za udaljeno ocjenjivanje govori o nepovjerljivom programskom kôdu \engl{untrusted source code} kojeg je potrebno prevesti i izvršiti.
-
-\section{Sustavi za udaljeno izvršavanje programskog kôda}
-Sustav za udaljeno izvršavanje programskog kôda (engl.\ \textit{online code execution system}, krat.\ \textit{OCES}) je sustav koji nudi \textit{web} aplikacijsko sučelje \engl{web API} za prevođenje i izvršavanje proizvoljnog programskog kôda. Arhitekturalni prikaz na slici \ref{fig:oj-ecosystem} izdvaja sustav za udaljeno izvršavanje programskog kôda kao zasebnu komponentu na koju se oslanjaju sustav za udaljeno ocjenjivanje, a zatim i sustavi razvijeni za specifičan slučaj uporabe.
-
-Sustav za udaljeno izvršavanje programskog kôda najčešće je strogo povezan i zavisan o ostatku komponenata u arhitekturu sustava za udaljeno ocjenjivanje \citep{9245310}, međutim, u ovom radu razmatraju se oni sustavi za udaljeno izvršavanje programskog kôda koji su neovisni o ostatku arhitekture koja se na njih oslanja.
-
-Formalno, \citep{9245310} definira sustav za udaljeno izvršavanje programskog kôda kroz funkcionalne i nefunkcionalne zahtjeve.
-
-\subsubsection{Funkcionalni zahtjevi}
-Sustav za udaljeno izvršavanje programskog kôda \textbf{mora} pružiti:
-\begin{itemize}
-    \item dobro dokumentirano \textit{web} aplikacijsko sučelje,
-    \item podršku za prevođenje i izvršavanje proizvoljnog programskog kôda za barem jedan programski jezik,
-    \item izvršavanje u zaštićenom okruženju s pretpostavljenim vremenskim i memorijskim ograničenjima,
-    \item podršku za navođenje proizvoljnog standardnog ulaza \engl{standard input},
-    \item podršku za dohvat osnovnih meta podataka o rezultatu izvršavanja programa
-\end{itemize}
-
-Dodatno, sustav za udaljeno izvršavanje programskog kôda \textbf{može} pružiti podršku za:
-\begin{itemize}
-    \item navođenje dodatnih opcija prevodioca,
-    \item navođenje komandno-linijskih argumenata,
-    \item navođenje vremenskih i memorijskih ograničenja,
-    \item inicijalizaciju zaštićenog okruženja s dodatnim datotekama,
-    \item dohvat detaljnih meta podataka o izvršavanju programa,
-    \item skupne zahtjeve za izvršavanje,
-    \item višestruke standardne ulaze, i
-    \item autentifikaciju.
-\end{itemize}
-
-\subsubsection{Nefunkcionalni zahtjevi}
-Sustav za udaljeno izvršavanje programskog kôda \textbf{treba} biti:
-\begin{itemize}
-    \item skalabilan,
-    \item konfigurabilan,
-    \item siguran,
-    \item lako upogonljiv,
-    \item efikasan,
-    \item elastičan,
-    \item proširiv, i
-    \item robustan.
-\end{itemize}
-
-\subsection{Sustav Sphere Engine}
-Sustav za udaljeno izvršavanje programskog kôda Sphere Engine razvila je Poljska tvrtka Sphere Research Labs\footnote{https://sphere-research.com} 2008.\ godine. Sphere Engine je jedan od vodećih komercijalnih sustava za udaljeno izvršavanje programskog kôda kojeg koristi više od 1000 institucija u 180 država. Jedna od najpoznatijih \textit{web} aplikacija koja koristi Sphere Engine je SPOJ \citep{SPOJ} koju je razvila ista tvrtka, a na kojoj korisnici mogu rješavati razne problemske zadatke iz domene natjecateljskog programiranja. Osim SPOJ-a, CodeChef \citep{CodeChef} također koristi Sphere Engine za udaljeno izvršavanje programskog kôda.
-
-Budući da je Sphere Engine zatvoreni komercijalni sustav nisu dostupne informacije o njegovoj izvedbi, niti o tome u kojim tehnologijama je razvijen.
-
-U svrhu ovog rada dovoljno je spomenuti da sustav omogućuje prevođenje i izvršavanje programskog kôda u mnoštvo programskih jezika od kojih će u ovom radu biti promatrani samo Python, \text{C++} i Java.
-
-Također, sustav Sphere Engine omogućuje asinkrono izvršavanje programskog kôda koje podrazumijeva da korisnik asinkrono mora provjeravati rezultat izvođenja nakon što je napravio zahtjev za izvršavanje.
-
-\subsection{Sustav Piston}
-Sustav za udaljeno izvršavanje programskog kôda Piston \citep{Piston} je sustav otvorenog kôda koji je dostupan na platformi GitHub. Razvijen je i koristi se u edukativne svrhe zajednice koju vodi autor tog projekta.
-
-Kao zaštićenu okolinu u kojoj se izvršava programski kôda korisnika, sustav Piston koristi Docker \citep{merkel2014docker} i nudi osnovnu dokumentaciju \textit{web} aplikacijskog sučelja. Sustav Piston, kao i Sphere Engine podržava mnoštvo programskih jezika, međutim u ovom radu promatrani su samo Python, \text{C++} i Java.
-
-Za razliku od sustava Sphere Engine koji podržava isključivo asinkrono izvršavanje programskog kôda, sustav Piston podržava isključivo sinkrono izvršavanje. Sinkrono izvršavanje podrazumijeva da će pozivatelj od sustava Piston dobiti rezultate izvođenja kao odgovor na HTTP zahtjev.
-
-\subsection{Sustav Judge0}
-Razvoj sustava za udaljeno izvršavanje programskog kôda Judge0 \citep{9245310} započeo je u kolovozu 2016.\ godine na inicijativu autora ovog rada. Cilj razvoja sustava Judge0 bio je izgradnja novog, robustnog, skalabilnog i lako uporabljivog sustava za udaljeno izvršavanje programskog kôda koji se može jednostavno integrirati u razne \textit{web} aplikacije koje trebaju funkcionalnost izvršavanja programskog kôda.
-
-Do danas, u vrijeme pisanja ovog rada, javna instanca sustava Judge0 izvršila je preko 12 milijuna programa korisnika diljem svijeta koji su sustav Judge0 integrirali u svoje proizvode. Također, u svijetu postoji preko 200 aktivnih instanci sustava Judge0 kojeg su razne institucije i tvrtke pokrenule na svojim poslužiteljima. Od ak.god.\ 2018./2019. sustav Judge0 aktivno se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu kao integracijski dio platforme za e-učenje Edgar \citep{mekterovic2020building}.
-
-Sustav Judge0 podržava prevođenje i izvršavanje programa s preko 60 različitih prevodioca, podržava sinkrono i asinkrono izvršavanje programskog kôda, a kao zaštićenu okolinu za prevođenje i izvršavanje koristi Isolate \citep{marevs2012new}.
-
-Bogata dokumentacija\footnote{https://ce.judge0.com} \textit{web} aplikacijskog sučelja omogućava razvijateljima da brzo i lako upoznaju sve funkcionalnosti ovog sustava koji sadrži sve funkcionalnosti koje nude sustavi Piston i Sphere Engine.
-
-\chapter{Analiza performansi}
+\chapter{Analiza performansi sustava za udaljeno izvršavanje programskog kôda}
 \label{chap:analysis}
 Analiza performansi sustava za udaljeno izvršavanje programskog kôda se ne spominje u literaturi budući da se tek od \citep{9245310} sustavi za udaljeno izvršavanje programskog kôda razmatraju kao zasebne komponente u arhitekturi sustava za udaljeno ocjenjivanje.
 \citep{drung2011enhance} razmatraju optimizaciju performansi postojećeg sustava za udaljeno ocjenjivanje, međutim, njihovo istraživanje usmjereno je u ugađanje opcija operacijskog sustava i algoritama raspoređivanja zadataka za izvršavanje.
@@ -300,7 +369,7 @@ Impulsno-determinističko opterećenje sustava definirano je parametrima $N$ i $
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/Impulse-deterministic Load (N = 10, M = 6).pdf}
+	\includegraphics[width=\textwidth]{images/Impulsno-determinističko opterećenje (N = 5, M = 4).pdf}
 	\caption{
 		Impulsno-determinističko opterećenje sustava (N = 10, M = 6).
 	}
@@ -314,7 +383,7 @@ Kontinuirano-determinističko opterećenje sustava definirano je također parame
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/Continuous-deterministic Load (N = 10, M = 20).pdf}
+	\includegraphics[width=\textwidth]{images/Kontinuirano-determinističko opterećenje (N = 5, M = 10).pdf}
 	\caption{
 		Kontinuirano-determinističko opterećenje sustava (N = 10, M = 20).
 	}
@@ -326,7 +395,7 @@ Kontinuirano-stohastičko opterećenje sustava koristi Poissonovu distribuciju s
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/Continuous-stochastic Load (N = 10, M = 20).pdf}
+	\includegraphics[width=\textwidth]{images/Kontinuirano-stohastičko opterećenje (N = 5, M = 10).pdf}
 	\caption{
 		Kontinuirano-stohastičko opterećenje sustava (N = 10, M = 20).
 	}
@@ -339,7 +408,7 @@ Kontinuirano-stohastičko opterećenje sustava koristi Poissonovu distribuciju s
     language=python
 ]
 import numpy
-N, M = 10, 20
+N, M = 5, 10
 print(numpy.random.poisson(N, M))
 \end{lstlisting}
 
@@ -404,7 +473,7 @@ Asinkrono izvršavanje programskog kôda započinje na isti način kao i sinkron
 	\caption{
 		Asinkrono izvršavanje programskog kôda.
 	}
-	\label{fig:sync-execution}
+	\label{fig:async-execution}
 \end{figure}
 
 \section{Metrike za analizu performansi}
