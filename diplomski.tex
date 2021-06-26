@@ -289,12 +289,12 @@ Asinkrona interakcija (slika \ref{fig:async-interaction}) započinje na isti na�
 
 Sustav Piston podržava sinkronu interakciju, sustav Sphere Engine podržava asinkronu, dok sustav Judge0 podržava oba načina interakcije. Postoji zapravo još jedan način interakcije između OJ-a i OCES-a, a to je preko povratnog URL poziva \engl{URL callback}, međutim, u ovom radu takva vrsta interakcije se ne razmatra. Ukratko, prilikom stvaranja zahtjeva OJ navodi URL kojeg OCES mora iskoristiti za stvaranje povratnog zahtjeva koji u svom tijelu \engl{body} sadrži rezultat izvršavanja programa. Sphere Engine i Judge0 podržavaju i ovakav način interakcije.
 
-\section{Aplikacija za udaljeno programiranje}
-Pored dosad nabrojanih specijaliziranih aplikacija koje se arhitekturalno oslanjaju na sustav za udaljeno ocjenjivanje (slika \ref{fig:oj-ecosystem}) postoje još i \textit{web} aplikacije za udaljeno programiranje \engl{online compilers} i \textit{web} aplikacije za udaljeno razvijanje \engl{online IDEs}. \textit{Web} aplikacija poput aplikacije Judge0 IDE \citep{Judge0IDE} u izvedbi aplikacije za udaljeno programiranje omogućuje korisniku pisanje, prevođenje i izvršavanje programskog kôda u jednom od podržanih programskih jezika (slika \ref{fig:judge0-ide-ui}). \citep{wasik2018survey} daje detaljnu usporedba ovakvih i sličnih \textit{web} aplikacija.
+\section{\textit{Web} aplikacija za udaljeno programiranje}
+\textit{Web} aplikacija za udaljeno programiranje poput aplikacije Judge0 IDE \citep{Judge0IDE} najjednostavniji je primjer uporabe sustava za udaljeno izvršavanje programskog kôda koje korisnicima omogućuju pisanje, prevođenje i izvršavanje programskog kôda u jednom od podržanih programskih jezika (slika \ref{fig:judge0-ide-ui}).
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/judge0-ide-ui.png}
+	\includegraphics[width=\textwidth]{images/Judge0 IDE UI.png}
 	\caption{
 		Sučelje \textit{web} aplikacije Judge0 IDE.
 	}
@@ -308,7 +308,7 @@ Izvedba sustava za udaljeno ocjenjivanje kao \textit{web} aplikacije za e-učenj
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/edgar-ui.png}
+	\includegraphics[width=\textwidth]{images/Edgar UI.png}
 	\caption{
 		Sučelje \textit{web} aplikacije Edgar iz perspektive učitelja.
 	}
@@ -317,7 +317,7 @@ Izvedba sustava za udaljeno ocjenjivanje kao \textit{web} aplikacije za e-učenj
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/codechum-ui.png}
+	\includegraphics[width=\textwidth]{images/CodeChum UI.png}
 	\caption{
 		Sučelje \textit{web} aplikacije CodeChum.
 	}
@@ -328,7 +328,7 @@ Izvedba sustava za udaljeno ocjenjivanje kao \textit{web} aplikacije za e-učenj
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/hackerrank-ui.png}
+	\includegraphics[width=\textwidth]{images/HackerRank UI.png}
 	\caption{
 		Sučelje \textit{web} aplikacije HackerRank. \citep{HackerRank}
 	}
@@ -339,7 +339,7 @@ Osim što pomažu u regrutaciji i procesu zapošljavanja, sustavi za udaljeno oc
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/leetcode-ui.png}
+	\includegraphics[width=\textwidth]{images/LeetCode UI.png}
 	\caption{
 		Sučelje \textit{web} aplikacije LeetCode.
 	}
