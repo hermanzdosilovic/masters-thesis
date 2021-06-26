@@ -253,14 +253,41 @@ Sustav Judge0 odlikuje se prije svega bogatom dokumentacijom \textit{web} aplika
 \pagebreak
 
 \section{Sustav za udaljeno ocjenjivanje}
-Formalno, sustav za udaljeno ocjenjivanje \citep{wasik2018survey} definira kao udaljenu uslugu \engl{online service} koja u oblaku \engl{cloud} izvodi barem jednu od sljedećih faza:
+Sustav za udaljeno ocjenjivanje formalno je definiran u \citep{wasik2018survey} kao udaljena usluga \engl{online service} koja u oblaku \engl{cloud} izvodi barem jednu od sljedećih faza:
 \begin{itemize}
-    \item podnošenje zahtjeva za izvršavanje programskog kôda \engl{submission},
-    \item procjena podnesenoga programskog kôda \engl{assessment},
-    \item ocjenjivanje podnesenoga programskog kôda \engl{scoring}.
+    \item[$\bullet$] podnošenje zahtjeva za izvršavanje programskog kôda \engl{submission},
+    \item[$\bullet$] procjena podnesenoga programskog kôda \engl{assessment}, i
+    \item[$\bullet$] ocjenjivanje podnesenoga programskog kôda \engl{scoring}.
 \end{itemize}
 
-Podnošenje zahtjeva za izvršavanje programskog kôda podrazumijeva prihvaćanje programskog kôda u sustav, prevođenje po potrebi i verifikaciju da je program spreman za izvršavanje. U procjeni podnesenoga programskog kôda program se pokreće za svaki ispitni primjer i provjerava se uspješnost izvođenja programa u zadanim procesorskim i memorijskim ograničenjima. Također, u istoj fazi, provjerava se standardni izlaz \engl{standard output} korisničkog programa i uspoređuje ga se s očekivanim izlazom za trenutni ispitni primjer \engl{expected output}. Konačno, u fazi ocjenjivanja, podnesenom programskom kôdu dodjeljuje se ocjena na temelju rezultata iz prethodnih faza. Tako npr.\ na ocjenu u natjecateljskom programiranju može utjecati vrijeme koje je bilo potrebno natjecatelju da riješi pojedini zadatak. Što kasnije natjecatelj riješi ispravno zadatak to će manje bodova dobiti čak i ako su mu svi ispitni primjeri ispravni uz zadana vremenska i memorijska ograničenja.
+Podnošenje zahtjeva za izvršavanje programskog kôda podrazumijeva prihvaćanje programskog kôda u sustav, prevođenje po potrebi i verifikaciju da je program spreman za izvršavanje. U procjeni podnesenoga programskog kôda program se pokreće za svaki ispitni primjer i provjerava se uspješnost izvođenja programa sa zadanim procesorskim i memorijskim ograničenjima. Također, u istoj fazi, provjerava se standardni izlaz programa i uspoređuje ga se s očekivanim izlazom za trenutni ispitni primjer. Konačno, u fazi ocjenjivanja, dodjeljuje se ocjena na temelju rezultata iz prethodnih faza. Tako npr.\ na ocjenu u natjecateljskom programiranju može utjecati vrijeme koje je bilo potrebno natjecatelju da riješi pojedini zadatak. Što kasnije natjecatelj riješi ispravno zadatak to će manje bodova dobiti čak ako su mu svi ispitni primjeri ispravni uz zadana procesorska i memorijska ograničenja.
+
+\subsection{Interakcija sa sustavom za udaljeno izvršavanje programskog kôda}
+Interakcija sustava za udaljeno ocjenjivanje i sustava za udaljeno izvršavanje programskog kôda može se dogoditi na dva načina: sinkrono i asinkrono.
+
+Slika \ref{fig:sync-interaction} prikazuje dijagram toka sinkrone interakcije koja započinje zahtjevom za izvršavanjem koji OCES prihvati i u odgovoru vraća rezultate izvršavanja. Budući da izvršavanje programskog kôda može trajati i po nekoliko sekundi ova interakcija s OCES-om može iscrpiti njegove poslužiteljske resurse prilikom intenzivnog višekorisničkog opterećenja.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/Sync Interakcija.pdf}
+	\caption{
+		Sinkrona interakcija OJ-a i OCES-a.
+	}
+	\label{fig:sync-interaction}
+\end{figure}
+
+Asinkrona interakcija (slika \ref{fig:async-interaction}) započinje na isti način kao i sinkrona - zahtjevom za izvršavanje koji OCES prihvati, međutim, sada OCES vraća jedinstveni identifikator zahtjeva. Nakon što OJ primi jedinstveni identifikator svog zahtjeva na njemu je odgovornost da posebnim zahtjevom provjerava njegov status dok ne utvrdi da je izvršavanje završilo.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Async Interakcija.pdf}
+	\caption{
+		Asinkrona interakcija OJ-a i OCES-a.
+	}
+	\label{fig:async-interaction}
+\end{figure}
+
+Sustav Piston podržava sinkronu interakciju, sustav Sphere Engine podržava asinkronu, dok sustav Judge0 podržava oba načina interakcije. Postoji zapravo još jedan način interakcije između OJ-a i OCES-a, a to je preko povratnog URL poziva \engl{URL callback}, međutim, u ovom radu takva vrsta interakcije se ne razmatra. Ukratko, prilikom stvaranja zahtjeva OJ navodi URL kojeg OCES mora iskoristiti za stvaranje povratnog zahtjeva koji u svom tijelu \engl{body} sadrži rezultat izvršavanja programa. Sphere Engine i Judge0 podržavaju i ovakav način interakcije.
 
 \section{Aplikacija za udaljeno programiranje}
 Pored dosad nabrojanih specijaliziranih aplikacija koje se arhitekturalno oslanjaju na sustav za udaljeno ocjenjivanje (slika \ref{fig:oj-ecosystem}) postoje još i \textit{web} aplikacije za udaljeno programiranje \engl{online compilers} i \textit{web} aplikacije za udaljeno razvijanje \engl{online IDEs}. \textit{Web} aplikacija poput aplikacije Judge0 IDE \citep{Judge0IDE} u izvedbi aplikacije za udaljeno programiranje omogućuje korisniku pisanje, prevođenje i izvršavanje programskog kôda u jednom od podržanih programskih jezika (slika \ref{fig:judge0-ide-ui}). \citep{wasik2018survey} daje detaljnu usporedba ovakvih i sličnih \textit{web} aplikacija.
@@ -454,27 +481,6 @@ Standardni ulaz ovog scenarija isti je kao i standardni ulaz scenarija mrežnog 
 Vremenska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(n^2)$, a memorijska složenost je $\mathcal{O}(n)$, gdje je $n$ duljina ulaznog niza brojeva, uz ogradu da $n$ ne može biti veći od 20000.
 
 \section{Strategije izvršavanja}
-Zahtjev za izvršavanje programskog kôda može se napraviti na dva načina: sinkrono i asinkrono. Slika \ref{fig:sync-execution} prikazuje dijagram toka sinkronog izvršavanja programskog kôda. Korisnik započinje interakciju s sustava stvarajući zahtjev za izvršavanjem, zatim sustav kao odgovor vraća korisniku rezultate izvršavanja. Budući da izvršavanje programskog kôda može trajati i po nekoliko sekundi ova strategija izvršavanja može iscrpiti poslužiteljske resurse prilikom intenzivnog višekorisničkog opterećenja.
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=0.75\textwidth]{images/sync-execution.pdf}
-	\caption{
-		Sinkrono izvršavanje programskog kôda.
-	}
-	\label{fig:sync-execution}
-\end{figure}
-
-Asinkrono izvršavanje programskog kôda započinje na isti način kao i sinkrono - stvaranjem zahtjeva za izvršavanje, međutim, u asinkronoj strategiji sustav korisniku vraća jedinstveni identifikator zahtjeva kojeg je korisnik napravio. Nakon toga korisnik treba posebnim zahtjevom provjeravati status svog zahtjeva dok ne utvrdi da je izvršavanje završilo.
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=0.75\textwidth]{images/async-execution.pdf}
-	\caption{
-		Asinkrono izvršavanje programskog kôda.
-	}
-	\label{fig:async-execution}
-\end{figure}
 
 \section{Metrike za analizu performansi}
 Radni okvir analize performansi sustava za udaljeno izvršavanje programskog kôda razmatra dvije metrike: uspješnost izvođenja i vrijeme obrade.
