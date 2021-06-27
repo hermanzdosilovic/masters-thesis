@@ -754,6 +754,77 @@ providers:
 
 
 \section{Pregled sučelja grafičkog izvještaja}
+Aplikacija Hélory nakon eksperimenta generira izvještaj u HTML formatu kojeg je moguće otvoriti u internet pregledniku. Ova cjelina daje pregled sučelja grafičkog izvještaja na primjeru izvještaja koji je nastao eksperimentom pokrenutim naredbom prikazanom u isječku \ref{lst:helory-report-example}.
+
+\
+
+\begin{lstlisting}[
+    caption={Pokretanje eksperimenta koji generira izvještaj opisan u ovom odjeljku.},
+    label={lst:helory-report-example},
+    numbers=none,
+    xleftmargin=0cm,
+    xrightmargin=-1.1cm
+]
+$ ./helory run stochastic --intensity 5 --duration 10 --endpoint judge0_ce
+\end{lstlisting}
+
+Izvještaj se sastoji od četiri dijela. Prvi dio izvještaja prikazan je na slici \ref{fig:report-experiment-details} i sastoji se od tablice na lijevoj strani koja prikazuje sve važne detalje o pokrenutom eksperimentu. Tablica prikazuje da je eksperiment višekorisničkog opterećenja pokrenut koristeći kontinuirano-stohastičku dinamiku s parametrima $N=5$ i $M=10$ na OCES instanci Judge0 CE, i koristeći C++ implementaciju jednostavnog \lstinline{hello_world} scenarija. Tablica također prikazuje da je korištena asinkrona interakcija između aplikacije i sustava. Eksperiment je trajao 14 sekundi, što znači da je navedeno opterećenje OCES instanca Judge0 CE uspjela obraditi u tom vremenu. S desne strane iste slike prikazan je graf uspješnosti koji u ovom primjeru prikazuje da je OCES instanca sve zahtjeve uspješno obradila. U donjem desnom kutu slike \ref{fig:report-experiment-details} prikazan je padajući izbornik \engl{dropdown} koji omogućuje odabir jedinice vremena koja će se koristiti kao korak vremenske osi na grafovima koji slijede.
+
+\pagebreak
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Report UI 1.png}
+	\caption{
+		Prikaz detalja o pokrenutom eksperimentu.
+	}
+	\label{fig:report-experiment-details}
+\end{figure}
+
+Slika \ref{fig:report-tat} prikazuje drugi dio grafičkog sučelja izvješća koji prikazuje kutijaste dijagrame \engl{box plots} vremena obrade zahtjeva grupiranih prema vremenu završetka slanja podataka u zahtjevu narudžbe koristeći odabrani korak jedinice vremena. U ovom slučaju odabrani korak jedinice vremena je 1 sekunda, što znači da će u isti kutijasti dijagram biti grupirani svi zahtjevi koji su u istoj sekundi završili slanje podataka u zahtjevu narudžbe. 
+
+Sljedeći graf koji prikazuje izvještaj je graf prikazan na slici \ref{fig:report-requests} koji prikazuje koliko je zahtjeva u istom vremenskom trenutku odabranog koraka:
+\begin{itemize}
+    \item[$\bullet$] \textit{Started Orders} - započeo zahtjev narudžbe,
+    \item[$\bullet$] \textit{Sent Orders} - poslao zahtjev narudžbe,
+    \item[$\bullet$] \textit{Finished Orders} - završio zahtjev narudžbe,
+    \item[$\bullet$] \textit{Started Probes} - započeo zahtjev ispitivanja,
+    \item[$\bullet$] \textit{Finished Probes} - završio zahtjev ispitivanja, i
+    \item[$\bullet$] \textit{Finished Executions} - završio zahtjev izvršavanja.
+\end{itemize}
+
+\pagebreak
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.91\textwidth]{images/Report UI 2.png}
+	\caption{
+		Prikaz dijagrama vremena obrade zahtjeva.
+	}
+	\label{fig:report-tat}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.91\textwidth]{images/Report UI 3.png}
+	\caption{
+		Prikaz grafa zahtjeva narudžbe i zahtjeva ispitivanja.
+	}
+	\label{fig:report-requests}
+\end{figure}
+
+\pagebreak
+
+Konačno, slika \ref{fig:report-raw-data} prikazuje sirove podatke u formatu JSON koji su prikupljeni za vrijeme trajanja eksperimenta, a na temelju kojih su napravljeni prethnodno navedeni grafovi. Ove podatke moguće je preuzeti u formatu JSON i dodatno obraditi.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Report UI 4.png}
+	\caption{
+		Prikaz sirovih podatak prikupljenih za vrijeme eksperimenta.
+	}
+	\label{fig:report-raw-data}
+\end{figure}
 
 \chapter{Primjer korištenja sustava Hélory}
 \label{chap:use}
