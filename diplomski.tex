@@ -6,18 +6,14 @@
 \renewcommand{\lstlistingname}{Isječak}
 
 \lstset{
-	basicstyle=\linespread{1.2}\ttfamily\footnotesize,
-	keepspaces=true,
+	basicstyle=\footnotesize\ttfamily,
 	numbers=left,
 	frame=single,
 	captionpos=b,
-	showspaces=false,
-	numberstyle=\ttfamily,
-	columns=flexible,
+	numberstyle=\footnotesize\ttfamily,
 	extendedchars=true,
 	inputencoding=utf8,
-	xleftmargin=5mm,
-	xrightmargin=5mm
+	xleftmargin=\parindent
 }
 
 \begin{document}
@@ -88,6 +84,8 @@ Važnost korištenja zaštićenog okruženja koje osigurava da programski kôd k
 
 Isječak \ref{lst:infinite-compilation} prikazuje ispravan C program koji uključuje uređaj pseudo-slučajnih brojeva sustava Linux. Budući da uređaj generira beskonačni slijed pseudo-slučajnih brojeva, uključivanje tog uređaja dovodi do beskonačnog vremena prevođenja. Ukoliko više korisnika napravi zahtjev za izvršavanjem ovakvog ili sličnog programa, na poslužitelju brzo dolazi do iscrpljivanja procesorskih i memorijskih resursa i time postaje neupotrebljiv. Iz ovog je jednostavnog primjera jasno da je proces prevođenja potrebno pokrenuti u zaštićenom okruženju koje će imati ograničene procesorske i memorijske resurse.
 
+\
+
 \begin{lstlisting}[
     caption={Ispravan C program s beskonačnim vremenom prevođenja.},
     label={lst:infinite-compilation},
@@ -100,6 +98,8 @@ int main() {
 \end{lstlisting}
 
 Izoliranje izvršavanja programskog kôda korisnika još je važnije od izolacije prevođenja, budući da je za zloupotrebu neizoliranog procesa prevođenja potrebno nešto više znanja o prevodiocima i programskom jeziku koji se koristi. Isječak \ref{lst:fork-bomb} prikazuje C program koji će beskonačno mnogo puta stvoriti novi proces, i svaki novostvoreni proces napravit će isto. Budući da se broj novostvorenih procesa može opisati eksponencijalnom funkcijom $f(x) = 2^x$, gdje je $x$ broj ponavljanja petlje, ovaj program naziva se \textit{fork bomb}. Dovoljno je da jedan korisnik pokrene ovakav program da se na poslužitelju iscrpe procesorski i memorijski resursi koji će ga učiniti neupotrebljivim.
+
+\
 
 \begin{lstlisting}[
     caption={C program s beskonačnim grananjem novih procesa.},
@@ -368,6 +368,7 @@ Radni okvir omogućuje razmatranje tri različite dinamike višekorisničkog opt
 Svaka vrsta višekorisničkog opterećenja detaljno je opisana u nastavku ove cjeline. 
 
 \subsection{Impulsno-determinističko opterećenje sustava}
+\label{subsec:id-load}
 Impulsno-determinističko opterećenje sustava definirano je parametrima $N$ i $M$, gdje $N$ predstavlja broj zahtjeva koje treba istovremeno poslati, dok $M$ predstavlja broj iteracija koje je potrebno napraviti uz ogradu da zahtjevi poslani u iteraciji $i$ smiju biti poslani tek nakon što se izvrše zahtjevi u iteraciji $i - 1$. U svakoj od $M$ iteracija poslat će se $N$ istovremenih zahtjeva, odnosno, na kraju eksperimenta očekujemo da je u sustav pristiglo sveukupno $N \times M$ zahtjeva.
 
 \begin{figure}[htb]
@@ -384,6 +385,7 @@ Slika \ref{fig:id-load} prikazuje primjer dinamike impulsno-determinističkog op
 Impulsno-determinističko opterećenje sustava predstavlja najjednostavniju dinamiku opterećenja sustava, međutim, takva dinamika ne oponaša stvarno produkcijsko okruženje.
 
 \subsection{Kontinuirano-determinističko opterećenje sustava}
+\label{subsec:cd-load}
 Kontinuirano-determinističko opterećenje sustava definirano je također parametrima $N$ i $M$, međutim, za razliku od prethodne vrste opterećenja, istovremeni zahtjevi u iteraciji $i$ mogu započeti tek u vremenu $t_i = t_{i - 1} + 1$, gdje je vrijeme $t$ izraženo u sekundama. Budući da pri intenzivnom višekorisničkom opterećenju vrijeme obrade zahtjeva može trajati i po nekoliko desetaka sekundi, korak od jedne sekunde predstavlja najmanji interval vremena koji ima smisla promatrati kada se govori o broju zahtjeva koji dolaze u sustav po jedinici vremena.
 
 Slika \ref{fig:cd-load} prikazuje primjer dinamike kontinuirano-determinističkog opterećenja od 10 iteracija gdje je u svakoj iteraciji napravljeno 5 zahtjeva.
@@ -402,6 +404,7 @@ Slika \ref{fig:cd-load} prikazuje primjer dinamike kontinuirano-determinističko
 \subsection{Kontinuirano-stohastičko opterećenje sustava}
 Kontinuirano-stohastičko opterećenje sustava koristi Poissonovu distribuciju s parametrom $\lambda = N$ za određivanje broja istovremenih zahtjeva u koraku $i$. Slika \ref{fig:cs-load} prikazuje primjer dinamike kontinuirano-stohastičkog opterećenja s parametrima $N=5$ i $M=10$. Niz pseudo-slučajnih brojeva iz primjera generiran je pomoću isječka \ref{lst:poisson-numbers} napisanog u programskom jeziku Python.
 
+\
 
 \begin{lstlisting}[
     caption={Generiranje pseudo-slučajnih brojeva iz Poissonove distribucije.},
@@ -474,7 +477,7 @@ Standardni ulaz ovog scenarija isti je kao i standardni ulaz scenarija mrežnog 
 Vremenska složenost algoritma koji implementira rješenje ovog scenarija je $\mathcal{O}(n^2)$, a memorijska složenost je $\mathcal{O}(n)$, gdje je $n$ duljina ulaznog niza brojeva, uz ogradu da $n$ ne može biti veći od 20.000.
 
 \section{Strategije izvršavanja}
-Odabir strategije izvršavanja programskog kôda svodi se na odabir načina interakcije sa sustavom koji su objašnjeni u potpoglavlju \ref{subsec:interaction}.
+Odabir strategije izvršavanja programskog kôda svodi se na odabir načina interakcije sa sustavom koji su objašnjeni u pododjeljku \ref{subsec:interaction}.
 
 Bilo da se radi o sinkronoj ili asinkronoj interakciji prvi zahtjev prema sustavu naziva se \textit{zahtjev narudžbe} \engl(order request) koji sadrži sve potrebne informacije koje sustav treba za izvršavanje programskog kôda, a to su: programski kôd, identifikator programskog jezika, standardni ulaz i očekivani standardni izlaz.
 
@@ -495,98 +498,262 @@ Vrijeme obrade \engl{turn around time} najvažnija je metrika iz perspektive kra
 
 \chapter{Aplikacija Hélory}
 \label{chap:helory}
-Aplikacija Hélory prva je specijalizirana aplikacija za višekorisničko opterećenje i analizu performansi sustava za udaljeno izvršavanje programskog kôda. Komandno-linijsko sučelje aplikacije Hélory omogućuje korisnicima pokretanje višekorisničkog opterećenja na tri različita sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0.
+Aplikacija Hélory implementira radni okvir (opisan u poglavlju \ref{chap:analysis}) za analizu performansi i ocjenu kvalitete i pouzdanosti usluge sustava za udaljeno izvršavanje programskog kôda. Komandno-linijsko sučelje aplikacije Hélory omogućuje pokretanje višekorisničkog opterećenja na tri različita sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0.
 
-Kao rezultat eksperimentalnog višekorisničkog opterećenja Hélory u tekućem direktoriju pohranjuje izvještaj u HTML formatu koji sadrži sve relevantne informacije o eksperimentu, grafički prikaz metrika od interesa i sirove podatke u formatu JSON prikupljene za vrijeme eksperimenta koji naknadno mogu biti dodatno iskorišteni.
+Kao rezultat eksperimentalnog višekorisničkog opterećenja Hélory u tekućem direktoriju pohranjuje izvještaj u HTML formatu koji sadrži sve relevantne informacije o eksperimentu, grafički prikaz metrika od interesa i neobrađene podatke u formatu JSON prikupljene za vrijeme eksperimenta koji naknadno mogu biti dodatno iskorišteni.
+
+Ovo poglavlje daje pregled korištenih tehnologija u razvoju aplikacije Hélory, a zatim i pregled komandno-linijskog sučelja i sučelja grafičkog izvještaja.
 
 \section{Korištene tehnologije}
-Hélory je razvijen u statičkom i tipiziranom programskom jeziku Go \citep{donovan2015go} koji se brzo prevodi u strojni kôd i kojeg odlikuje ekspresivnost, preciznost, jednostavnost i čistoća u pisanju programskog kôda, i jednostavnost pisanja konkuretnih programa koji efikasno iskorištavaju resurse domaćina. Izvještaj kojeg generira Hélory nakon eksperimenta napisan je u opisnom jeziku HTML uz korištenje CSS-a i JavaScripta, a za prikaz metrika od interesa u grafičkom obliku koristi se biblioteka Chart.js\footnote{https://github.com/chartjs/Chart.js}.
-
-\section{Prikupljanje podataka}
-Isječak \ref{lst:json-report} prikazuje primjer sirovih podataka u formatu JSON koje je sustav Hélory prikupio za vrijeme eksperimenta. Značenje svakog pojedinog ključa je sljedeće:
-\begin{itemize}
-    \item[$\bullet$] \lstinline{id} - jedinstveni identifikator,
-    \item[$\bullet$] \lstinline{name} - ime eksperimenta,
-    \item[$\bullet$] \lstinline{started_at} - vremenski trenutak početka,
-    \item[$\bullet$] \lstinline{finished_at} - vremenski trenutak završetka,
-    \item[$\bullet$] \lstinline{scenario} - korišteni scenarij,
-    \item[$\bullet$] \lstinline{scenario_description} -- opis korištenog scenarija,
-    \item[$\bullet$] \lstinline{language} - korišteni programski jezik,
-    \item[$\bullet$] \lstinline{endpoint} - ime korištenog sustava za udaljeno izvršavanje programskog kôda,
-    \item[$\bullet$] \lstinline{endpoint_url} - poveznica na korišteni sustav za udaljeno izvršavanje programskog kôda,
-    \item[$\bullet$] \lstinline{strategy} - korištena strategija izvršavanja programskog kôda,
-    \item[$\bullet$] \lstinline{experiment_type} - vrsta višekorisničkog opterećenja,
-    \item[$\bullet$] \lstinline{experiment_configuration} - konfiguracijske opcije specifične za vrstu višekorisničkog opterećenja, i
-    \item[$\bullet$] \lstinline{executions} - niz rezultata izvršavanja programskog kôda.
-\end{itemize}
-
-Jedinstveni identifikator eksperimenta \lstinline{id} dodjeljuje se eksperimentu na temelju 
-\pagebreak
-
-\begin{lstlisting}[
-    caption={Podaci o izvršavanju prikupljeni sustavom Hélory.},
-    label={lst:json-report},
-]
-{ 
-  "id": "2021-06-22T23:43:31+02:00-deterministic-cpu ...",
-  "name": "CPU Intensive in C++ via Judge0 CE with ...",
-  "started_at": "2021-06-22T23:43:31.863526+02:00",
-  "finished_at": "2021-06-22T23:43:41.749487+02:00",
-  "scenario": "CPU Intensive",
-  "scenario_description": "Find median of 20k integers ...",
-  "language": "C++",
-  "endpoint": "Judge0 CE",
-  "endpoint_url": "https://ce.judge0.com",
-  "strategy": "async",
-  "experiment_type": "deterministic",
-  "experiment_configuration": { "users": "2", "wait": true },
-  "executions": [{
-      "success": true,
-      "started_at": "2021-06-22T23:43:31.863754+02:00",
-      "finished_at": "2021-06-22T23:43:41.749159+02:00",
-      "order_started_at": "2021-06-22T23:43:31.864903+02:00",
-      "order_sent_at": "2021-06-22T23:43:32.142372+02:00",
-      "order_finished_at": "2021-06-22T23:43:33.968738+02:00",
-      "probes_started_at": [
-        "2021-06-22T23:43:35.968855+02:00",
-        "2021-06-22T23:43:38.457406+02:00"
-      ], "probes_finished_at": [
-        "2021-06-22T23:43:37.45341+02:00",
-        "2021-06-22T23:43:39.653258+02:00"
-      ]
-    }, {
-      "success": true,
-      "started_at": "2021-06-22T23:43:31.863732+02:00",
-      "finished_at": "2021-06-22T23:43:39.666589+02:00",
-      "order_started_at": "2021-06-22T23:43:31.864981+02:00",
-      "order_sent_at": "2021-06-22T23:43:32.142418+02:00",
-      "order_finished_at": "2021-06-22T23:43:33.972937+02:00",
-      "probes_started_at": [
-        "2021-06-22T23:43:35.973006+02:00"
-      ], "probes_finished_at": [
-        "2021-06-22T23:43:37.453396+02:00"
-      ]
-    }]
-}
-\end{lstlisting}
+Hélory je razvijen u statičkom i tipiziranom programskom jeziku Go \citep{donovan2015go} koji se brzo prevodi u strojni kôd i kojeg odlikuje ekspresivnost, preciznost, jednostavnost i čistoća u pisanju programskog kôda, ali i jednostavnost pisanja konkuretnih programa koji efikasno iskorištavaju resurse domaćina. Izvještaj kojeg generira Hélory nakon eksperimenta napisan je u opisnom jeziku HTML uz korištenje CSS-a i JavaScripta, a za prikaz metrika u grafičkom obliku koristi se biblioteka Chart.js.
 
 \pagebreak
 
 \section{Pregled komandno-linijskog sučelja}
-jednostavno sučelje s mnogo opcija.
+Isječak \ref{lst:helory-start} prikazuje ispis aplikacije Hélory prilikom pokretanja bez komandno-linijskih argumenata. U ispisu su navedene sljedeće naredbe dostupne unutar aplikacije koje omogućuju:
+\begin{itemize}
+    \item[$\bullet$] \lstinline{endpoints} - ispis dostupnih instanci sustava za udaljeno izvršavanje programskog kôda koje je moguće koristiti prilikom pokretanja eksperimenata,
+    \item[$\bullet$] \lstinline{languages} - ispis dostupnih programskih jezika,
+    \item[$\bullet$] \lstinline{providers} - ispis podržanih sustava za udaljeno izvršavanje programskog kôda,
+    \item[$\bullet$] \lstinline{run} - pokretanje višekorisničkog opterećenja, i
+    \item[$\bullet$] \lstinline{scenarios} - ispis dostupnih scenarija korištenja.
+\end{itemize}
 
-\subsection{Definiranje dostupnih sustava za udaljeno izvršavanje}
-\subsubsection{Podržani sustavi za udaljeno izvršavanje}
-\subsubsection{Podržane strategije izvršavanja}
-\subsection{Definiranje korisničkih scenarija}
-\subsubsection{Datoteka korisničkog scenarija}
-\subsubsection{Programski kôd}
-\subsubsection{Standardni ulaz}
-\subsubsection{Standardni izlaz}
-\subsection{Pokretanje opterećenja sustava}
-\subsubsection{Determinističko opterećenje sustava}
-\subsubsection{Stohastičko opterećenje sustava}
-\section{Pregled sučelja grafičkih rezultata}
+Naredbom \lstinline{providers} aplikacija će ispisati podržane sustave za udaljeno izvršavanje programskog kôda, a to su: Sphere Engine, Piston i Judge0. Međutim, budući da je za svaki podržani sustav moguće imati više dostupnih instanci, naredba \lstinline{endpoints} ispisuje koje su sve instance sustava za udaljeno izvršavanje programskog kôda na raspolaganju za odabir prilikom pokretanja eksperimenata. 
+
+\
+
+\begin{lstlisting}[
+    caption={Pokretanje aplikacije Hélory iz ljuske Bash.},
+    label={lst:helory-start},
+    numbers=none,
+    xleftmargin=0cm,
+    xrightmargin=-1cm
+]
+$ ./helory
+Helory is a performance analysis tool for online code execution systems.
+
+Usage:
+  helory [command]
+
+Available Commands:
+  endpoints   List all available endpoints
+  help        Help about any command
+  languages   List all available languages
+  providers   List all supported providers
+  run         Run benchmark
+  scenarios   List all available scenarios
+
+Flags:
+  -h, --help               help for helory
+      --log-level string    (default "info")
+
+Use "helory [command] --help" for more information about a command.
+\end{lstlisting}
+
+\pagebreak
+
+Isječak \ref{lst:helory-endpoints} prikazuje primjer ispisa naredbe \lstinline{endpoints} koji prikazuje dostupnost tri OCES instance jedinstvenih identifikatora: \lstinline{judge0_ce}, \lstinline{judge0_extra_ce} i \lstinline{piston_public}. Jedinstveni identifikatori OCES instanci koristit će se u pokretanju eksperimenata kako bi aplikacija znala koji OCES da koristi za višekorisničko opterećenje.
+
+\
+
+\begin{lstlisting}[
+    caption={Primjer ispisa dostupnih OCES instanci.},
+    label={lst:helory-endpoints},
+    numbers=none,
+    xleftmargin=0cm
+]
+$ ./helory endpoints
+id: judge0_ce
+name: Judge0 CE
+provider: judge0
+url: https://ce.judge0.com
+supported_execution_strategies: both
+default_execution_strategy: async
+
+id: judge0_extra_ce
+name: Judge0 Extra CE
+provider: judge0
+url: https://extra-ce.judge0.com
+supported_execution_strategies: both
+default_execution_strategy: async
+
+id: piston_public
+name: Piston (Free Public Instance)
+provider: piston
+url: https://emkc.org/api/v2/piston
+supported_execution_strategies: sync
+default_execution_strategy: sync
+\end{lstlisting}
+
+U nastavku ovog odjeljka slijedi pregled sučelja za pokretanje višekorisničkog opterećenja i odabir: dinamike višekorisničkog opterećenja, OCES-a, scenarija korištenja, i programskog jezika.
+
+\pagebreak
+
+\subsection{Pokretanje višekorisničkog opterećenja}
+Aplikacijska naredba \lstinline{run} ispisuje opcije \engl{flags} koje su dostupne prilikom pokretanja višekorisničkog opterećenja. Ispis naredbe \lstinline{run} prikazan je isječkom \ref{lst:helory-run} koji prikazuje da se pomoću naredbi \lstinline{deterministic} i \lstinline{stochastic} pokreće višekorisničko opterećenje odabrane dinamike.
+
+\
+
+\begin{lstlisting}[
+    caption={Dostupne opcije pri pokretanju višekorisničkog opterećenja.},
+    label={lst:helory-run},
+    numbers=none,
+    basicstyle=\scriptsize\ttfamily,
+    xleftmargin=0cm,
+    xrightmargin=-0.5cm
+]
+$ ./helory run
+Run benchmark
+
+Usage:
+  helory run [command]
+
+Available Commands:
+  deterministic Run deterministic benchmark with parallel users
+  stochastic    Run stochastic benchmark with parallel users
+
+Flags:
+      --config string               config file (default "./config.yaml")
+      --endpoint string             online code execution endpoint (default "judge0_ce")
+      --execution-strategy string   code execution strategy (default "default")
+  -h, --help                        help for run
+      --language string             programming language (default "cpp")
+      --scenario string             benchmark scenario (default "hello_world")
+
+Global Flags:
+      --log-level string    (default "info")
+
+Use "helory run [command] --help" for more information about a command.
+\end{lstlisting}
+
+\subsection{Odabir dinamike višekorisničkog opterećenja}
+Eksperiment višekorisničkog opterećenja impulsno-determinističke dinamike, opisane u pododjeljku \ref{subsec:id-load}, pokreće se naredbom: \lstinline{./helory run deterministic}. Odabir parametara $N$ i $M$ vrši se opcijom \lstinline{--users} koja prihvaća više formata za fleksibilan odabir parametara. Formati i njihova značenja koje opcija \lstinline{--users} prihvaća su sljedeći:
+\begin{itemize}
+    \item[$\bullet$] \lstinline{A} - odabire parametre $N = A$ i $M = 1$ (npr.\ \lstinline{--users 5}),
+    \item[$\bullet$] \lstinline{AxB} - odabire parametre $N = A$ i $M = B$ (npr.\ \lstinline{--users 5x10}),
+    \item[$\bullet$] \lstinline{A1,A2,...,Ai,...,Ak} - pokreće $K$ opterećenja s parametrima $N_i=A_i$ i $M=1$ (npr.\ \lstinline{--users 10,5,7}),
+    \item[$\bullet$] \lstinline{A1,A2,...,Ai,...,AKxB} - pokreće $K$ opterećenja s parametrima $N_i=A_i$ i $M=B$ (npr.\ \lstinline{--users 10,5,7x3}),
+    \item[$\bullet$] \lstinline{A1:A2:A3} - pokreće opterećenja s parametrima $M = 1$ i parametrima $N_i=A_1 + i \cdot A_3$, $i \in \mathbb{N}_0$ uz ogradu $N_i \leq A_2$ (npr.\ \lstinline{--users 5:30:2}), i
+    \item[$\bullet$] \lstinline{A1:A2:A3xB} - pokreće opterećenja s parametrima $M = B$ i parametrima $N_i=A_1 + i \cdot A_3$, $i \in \mathbb{N}_0$ uz ogradu $N_i \leq A_2$ (npr.\ \lstinline{--users 5:30:2x7}).
+\end{itemize}
+
+Eksperiment višekorisničkog opterećenja kontinuirano-determinističke dinamike, opisane u pododjeljku \ref{subsec:cd-load}, pokreće se na isti način kao i eksperiment impulsno-determinističke dinamike, ali uz navođenje dodatne opcije \lstinline{--no-wait}.
+
+Eksperiment višekorisničkog opterećenja s kontinuirano-stohastičkom dinamikom pokreće se naredbom \lstinline{./helory run stohastic}, gdje opcije \lstinline{--intensity} i \lstinline{--duration} služe za odabir parametara $N$ i $M$. Dodatno, budući da ova vrsta dinamike koristi generator pseudo-slučajnih brojeva, opcijom \lstinline{--seed} moguće je odabrati konstantu za inicijalizaciju generatora pseudo-slučajnih brojeva. Ako konstanta nije postavljena ovom opcijom, aplikacija će ju samostalno odabrati nasumičnim odabirom.
+
+\subsection{Odabir sustava za udaljeno izvršavanje programskog kôda}
+Navođenjem jedinstvenog identifikatora OCES-a, opcijom \lstinline{--endpoint}, odabire se sustav za udaljeno izvršavanje programskog kôda za koji će biti pokrenuto višekorisničko opterećenje. Isječak \ref{lst:helory-run-deterministic} prikazuje primjer pokretanja višekorisničkog opterećenja impulsno-determinističke dinamike parametara $N=5$ i $M=10$ na OCES-u \lstinline{judge0_ce}.
+
+\
+
+\begin{lstlisting}[
+    caption={Primjer pokretanja višekorisničkog opterećenja.},
+    label={lst:helory-run-deterministic},
+    numbers=none,
+    xleftmargin=0cm
+]
+$ ./helory run deterministic --users 5x10 --endpoint judge0_ce
+\end{lstlisting}
+
+Dostupne OCES instance korisnik navodi u glavnoj konfiguracijskoj datoteci u YAML formatu. Ako se drugačije ne navede opcijom \lstinline{--config}, aplikacija pretpostavlja da je glava konfiguracijska datoteka dostupna u tekućem direktoriju pod nazivom \textit{config.yaml}. Glavna konfiguracijska datoteka također sadrži i podatke o putanji do konfiguracijskih direktorija scenarija i programskih jezika koji su dostupni aplikaciji.
+
+\pagebreak
+
+\begin{lstlisting}[
+    caption={Primjer sadržaja glavne konfiguracijske datoteke.},
+    label={lst:helory-config}
+]
+endpoints:
+  judge0_ce:
+    &judge0_ce
+    name: Judge0 CE
+    provider: judge0
+    url: https://ce.judge0.com
+    supported_execution_strategies: both
+    default_execution_strategy: async
+
+  judge0_extra_ce:
+    <<: *judge0_ce
+    name: Judge0 Extra CE
+    url: https://extra-ce.judge0.com
+
+  piston_public:
+    name: Piston (Free Public Instance)
+    provider: piston
+    url: https://emkc.org/api/v2/piston
+    supported_execution_strategies: sync
+
+  sphere_engine:
+    name: Sphere Engine
+    provider: sphere
+    url: https://5deff13a.compilers.sphere-engine.com/api/v4
+    supported_execution_strategies: async
+
+scenarios:
+  data_dir: ./scenarios_data
+
+languages:
+  data_dir: ./languages_data
+\end{lstlisting}
+
+\pagebreak
+
+\subsection{Odabir scenarija}
+Ako se drugačije ne navede zastavicom \lstinline{--scenario}, prilikom pokretanja višekorisničkog opterećenja koristit će se jednostavan scenarij čiji je jedinstveni identifikator \lstinline{hello_world}, dok su jedinstveni identifikatori ostalih scenarija: \lstinline{cpu_intensive}, \lstinline{network_intensive}, i \lstinline{cpu_and_network_intensive}.
+
+\
+
+\begin{lstlisting}[
+    caption={Primjer odabira scenarija procesorskog opterećenja.},
+    label={lst:helory-run-deterministic-cpu-intensive},
+    numbers=none,
+    basicstyle=\scriptsize\ttfamily,
+    xleftmargin=0cm,
+    xrightmargin=-0.5cm
+]
+$ ./helory run deterministic --users 5x10 --endpoint judge0_ce --scenario cpu_intensive
+\end{lstlisting}
+
+\subsection{Odabir jezika}
+Prilikom pokretanja višekorisničkog opterećenja opcijom \lstinline{--language} moguće je odabrati programski jezik koji će aplikacija koristiti za odabrani scenarij. Programski jezik odabire se navođenjem njegovog jedinstvenog identifikatora koji je definiran u konfiguracijskom direktoriju za programske jezike dostupne aplikaciji. Primjer sadržaja konfiguracijskog direktorija programskih jezika prikazan je isječkom \ref{lst:helory-languages-dir}, dok je sadržaj konfiguracijske datoteke \textit{cpp.yaml} za programski jezik C++ prikazan u isječku \ref{lst:helory-cpp-config}. Ime konfiguracijske datoteke programskog jezika, bez njezinog nastavka \engl{extension}, služi za definiranje jedinstvenog identifikatora jezika. Konfiguracijska datoteka programskog jezika objedinjuje jedinstvene identifikatore programskih jezika koje koriste pojedini sustavi za udaljeno izvršavanje programskog kôda.
+
+\
+
+\begin{lstlisting}[
+    caption={Primjer sadržaja konfiguracijskog direktorija programskih jezika.},
+    label={lst:helory-languages-dir},
+    numbers=none,
+    xleftmargin=0cm,
+]
+./languages_data/
+|---- cpp.yaml
+|---- java.yaml
+|---- python.yaml
+\end{lstlisting}
+
+\pagebreak
+
+\begin{lstlisting}[
+    caption={Primjer sadržaja konfiguracijske datoteke programskog jezika C++.},
+    label={lst:helory-cpp-config},
+]
+name: C++
+filename: main.cpp
+providers:
+  judge0_ce:
+    language_id: 54
+  judge0_extra_ce:
+    language_id: 2
+  piston:
+    language_id: cpp
+    version: 10.2.0
+  sphere:
+    language_id: 1
+\end{lstlisting}
+
+
+\section{Pregled sučelja grafičkog izvještaja}
 
 \chapter{Primjer korištenja sustava Hélory}
 \label{chap:use}
