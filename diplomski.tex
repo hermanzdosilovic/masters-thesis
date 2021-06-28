@@ -826,27 +826,127 @@ Konačno, slika \ref{fig:report-raw-data} prikazuje sirove podatke u formatu JSO
 	\label{fig:report-raw-data}
 \end{figure}
 
-\chapter{Primjer korištenja sustava Hélory}
+\chapter{Primjer korištenja aplikacije Hélory}
 \label{chap:use}
+U ovom poglavlju bit će prikazan primjer korištenja aplikacije Hélory u analizi performansi sustava Piston i Judge0 koji su postavljeni na dva različita poslužitelja istih resursnih kapaciteta (2 CPU-a i 8 GB radne memorije) kupljenih preko platforme Digital Ocean. Cilj eksperimenta je ocijeniti kvalitetu i pouzdanost usluge koju nude ova dva sustava, međutim, treba uzeti u obzir da kvaliteta i pouzdanost usluge također ovisi i resursima poslužitelja, ali i načinu na koji ih sustavi iskorištavaju. Također, važno je naglasiti da su sustavi na poslužitelje instalirani prema javno dostupnim uputama bez dodatnih modifikacija.
+
+U analizi sustava promatrat će se jednostavan scenarij u \text{C++} implementaciji koristeći kontinuirano-stohastičku dinamiku s parametrima $N \in \left\{1,5,10\right\}$ i $M=60$. Budući da sustav Piston podržava isključivo sinkronu interakciju, u eksperimentima u kojima se koristi sustav Judge0 također će se koristiti sinkrona interakcija kako bi se ta dva sustava mogla pravedno usporediti.
+
+Dodatno, na kraju je napravljena analiza performansi instance sustava Judge0 koja se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
+
 \section{Analiza performansi sustava Piston}
+Prvi eksperiment višekorisničkog opterećenja kontinuirano-stohastičke dinamike s parametrima $N=1$ i $M=60$ trajao je 60 sekundi i svi su zahtjevi uspješno obrađeni. Slika \ref{fig:piston-1} prikazuje vrijeme obrade zahtjeva grupiranih u intervale po 5 sekundi. Medijan vrijeme obrade svake grupe zahtjeve je između 0,5 i 1 sekunde što znači da sustav dobro podnosi opterećenje. 
+
+Međutim, prilikom povećanja opterećenja na $N=5$ udio uspješno obrađenih zahtjeva pada na 82,98\%, a medijan vrijeme obrade zahtjeva raste i do 55 sekundi (slika \ref{fig:piston-2}). Sustav Piston još teže podnosi opterećenje za $N=10$ kada udio uspješno obrađenih zahtjeva dodatno padne na 42,44\%.
+
+Dodatno provedeni eksperimenti pokazuju da sustav Piston za ne obradi uspješno niti jedan zahtjev za opterećenje $N=1$ scenarija procesorskog opterećenja u \text{C++} implementaciji.
+
+Daljnja analiza performansi sustava Piston nije potrebna budući da za jednostavan scenarij korištenja ne prikazuje dobre rezultate niti po pitanju performansi, niti pouzdanosti.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Piston TAT for 1 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva sustava Piston za $N=1$ i $M=60$.
+	}
+	\label{fig:piston-1}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Piston TAT for 5 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva sustava Piston za $N=5$ i $M=60$.
+	}
+	\label{fig:piston-2}
+\end{figure}
+
+\pagebreak
+
 \section{Analiza performansi sustava Judge0}
+Sustavu Judge0 pri opterećenju $N=1$ treba 63 sekunde da uspješno obradi sve zahtjeve, međutim, medijan vrijeme obrade zahtjeva kreće se između 2 i 5 sekundi (slika \ref{fig:judge0-1}) što je nepovoljnije u odnosu na sustav Piston. 
+
+Pri opterećenju $N=5$ Judge0 zadržava udio uspješno obrađenih zahtjeva, međutim, medijan vrijeme obrade zahtjeva linearno raste s vremenom trajanja eksperimenta kako prikazuje slika \ref{fig:judge0-2}.
+
+Daljnjim povećanjem opterećenja na $N=10$ udio uspješno obrađenih zahtjeva pada na 81,79\%, a medijan vrijeme obrade zahtjeva i dalje linearno raste. Međutim, dodatnim eksperimentima utvrđeno je da pri asinkronoj interakciji istog opterećenja udio uspješno obrađenih zahtjeva 100\%, ali medijan vrijeme obrade zahtjeva opet linearno raste.
+
+Na poslužitelju s istim resursnim kapacitetima, sustav Judge0 pokazuje bolju pouzdanost od sustava Piston uz uvjet da se koristi preporučena asinkrona interakcija, međutim, medijan vrijeme obrade zahtjeva pri opterećenju $N>1$ linearno raste s vremenom trajanja opterećenja.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Judge0 TAT for 1 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva sustava Judge0 za $N=1$ i $M=60$.
+	}
+	\label{fig:judge0-1}
+\end{figure}
+
+\pagebreak
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Judge0 TAT for 5 10s.png}
+	\caption{
+		Vrijeme obrade zahtjeva sustava Judge0 za $N=5$ i $M=60$.
+	}
+	\label{fig:judge0-2}
+\end{figure}
+
+Instanca sustava Judge0 koja se koristi na Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu pokazuje zavidno stabilno medijan vrijeme obrade zahtjeva za kontinuirano-stohastičko opterećenje parametara $N=5$ i $M=60$ s asinkronom interakcijom za jednostavan scenarij korištenja u \text{C++} implementaciji. Slika \ref{fig:judge0-fer-1} prikazuje vrijeme obrade zahtjeva grupiranih u intervale duljine 5 sekundi. Svi zahtjevi uspješno su obrađeni. Povećanjem intenziteta na $N=10$ sustav zadržava stabilno medijan vrijeme obrade kao i u prethodnom slučaju, međutim, pri intenzitetu od $N=15$ udio uspješno obrađenih zahtjeva pada na 36,82\%. Razlog ovog naglog pada može biti zbog toga što u sustavu dolazi do prepunjenja reda poslova čija maksimalna veličina na toj instanci iznosi 250. To znači da će prilikom dolaska 251.\ zahtjeva sustav odbaciti zahtjev jer je red poslova pun.
+
+Dodatni eksperimenti napravljeni nad ovom instancom pokazuju kako je za sustav Judge0 uistinu nepovoljno koristiti sinkronu interakciju jer pri opterećenju od $N=5$ sustav uspješno obradi svega 70.21\% zahtjeva, dok medijan vrijeme obrade zahtjeva linearno raste s vremenom trajanja eksperimenta (slika \ref{fig:judge0-fer-2}). Službena, javno dostupna, instanca sustava Judge0 \citep{Judge0CE} nema problema sa rukovanjem ovog intenziteta opterećenja u sinkronoj interakciji. Njezino medijan vrijeme obrade zahtjeva ponaša se kao na slici \ref{fig:judge0-fer-1}, odnosno, kao i FER-ova instanca za asinkronu interakciju.
+
+\pagebreak
+
+Eksperimenti pokazuju da FER-ova instanca sustava Judge0 podnosi srednje opterećenje od 10 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi srednje opterećenje od 5 zahtjeva u sekundi, a za programski jezik Python čak 20 zahtjeva u sekundi. Za sva tri jezika vrijeme obrade zahtjeva izgleda kao na slici \ref{fig:judge0-fer-1}.
+
+\
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/Judge0 FER TAT for 5 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=5$ i $M=60$ s asinkronom interakcijom.
+	}
+	\label{fig:judge0-fer-1}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/Judge0 FER TAT for sync 5 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=5$ i $M=60$ sa sinkronom interakcijom.
+	}
+	\label{fig:judge0-fer-2}
+\end{figure}
 
 \chapter{Budući razvoj}
 \label{chap:future}
+Za budući razvoj radnog okvira analize performansi i ocjene kvalitete i pouzdanosti preporučuje se razmatranje dodatnih metrika poput npr.\ trajanja slanja zahtjeva narudžbe. Za budući razvoj aplikacije Hélory preporuča se razvoj nove funkcionalnosti u grafičkom izvješću koja će omogućiti objedinjavanje i usporedbu rezultata više eksperimenata. Također, preporuča se implementacija automatskog traženja srednjeg opterećenja koje instanca podržava za odabrani scenarij korištenja i programski jezik. Za to je prije svega potrebno dobro definirati uvjet stabilne podrške nekog opterećenja. Dodatno, preporuča se detektiranje i implementacija dodatnih grafova koji se mogu dobiti koristeći sirove podatke prikupljene za vrijeme trajanja eksperimenta.
 
 \chapter{Zaključak}
+Sustav za udaljeno izvršavanje programskog kôda služe za sigurno i pouzdano izvršavanje korisničkog programskog kôda u sustavima za udaljeno ocjenjivanje koji se koriste u raznim slučajevima primjene među kojima su i \textit{web} aplikacije za e-učenje. U arhitekturi ekosustava sustava za udaljeno ocjenjivanje, sustavi za udaljeno izvršavanje programskog kôda promatraju se kao zasebne komponente u literaturi tek od \citep{9245310}. Budući da sustavi za udaljeno izvršavanje programskog kôda imaju ključni utjecaj na korisničko iskustvo, važno je da prilikom intenzivnog višekorisničkog opterećenja korisničko iskustvo ne pati zbog dugog vremena obrade zahtjeva za izvršavanje programskog kôda. Dosada u kontekstu sustava za udaljeno izvršavanje programskog kôda nisu postavljeni radni okviri za analizu njihovih performansi i ocjenu njihove kvalitete i pouzdanosti.
+
+Ovaj rad predstavlja prvi radni okvir za analizu performansi i ocjenu kvalitete i pouzdanosti usluge koju nude sustavi za udaljeno izvršavanje programskog kôda. Ovaj rad također predstavlja i aplikaciju Hélory koja implementira predstavljeni radni okvir za analizu performansi i ocjenu kvalitete i pouzdanosti za tri sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0. Razvijen u obliku komandno-linijske aplikacije, Hélory nudi jednostavno pokretanje višekorisničkog opterećenja na željenom sustavu, a nakon eksperimenta Hélory će generirati i pohraniti izvještaj o pokrenutom eksperimentu koji sadrži detaljne informacije o svakom pojedinom zahtjevu za izvršavanje i grafički prikaz metrika od interesa.
+
+Koristeći aplikaciju Hélory eksperimentalno je dokazano da se pri korištenju sustava Judge0 preporuča koristiti asinkronu interakciju sa sustavom. Također provedeni eksperimenti nad instancom sustava Judge0 koja se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu pokazuju da instanca podnosi srednje opterećenje od 10 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi srednje opterećenje od 5 zahtjeva u sekundi, a za programski jezik Python čak 20 zahtjeva u sekundi.
 
 \bibliography{literatura}
 \bibliographystyle{fer}
 
 \begin{sazetak}
-\kljucnerijeci{analiza performansi, sustav za udaljeno izvršavanje programskog kôda, sustav za udaljeno ocjenjivanje, izvršavanje nepouzdanog programskog kôda}
+Sustavi za udaljeno izvršavanje programskog kôda imaju ključni utjecaj na korisničko iskustvo, i važno je da prilikom intenzivnog višekorisničkog opterećenja korisničko iskustvo ne pati zbog dugog vremena obrade zahtjeva za izvršavanje programskog kôda. Dosada u kontekstu sustava za udaljeno izvršavanje programskog kôda nisu postavljeni radni okviri za analizu njihovih performansi i ocjenu njihove kvalitete i pouzdanosti. Ovaj rad predstavlja prvi radni okvir za analizu performansi i ocjenu kvalitete i pouzdanosti usluge koju nude sustavi za udaljeno izvršavanje programskog kôda. Ovaj rad također predstavlja i aplikaciju Hélory koja implementira predstavljeni radni okvir za analizu performansi i ocjenu kvalitete i pouzdanosti za tri sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0. Nakon pregleda osnovnih funkcionalnosti i sučelja aplikacije Hélory dan je primjer korištenja u analizi performansi sustava Piston i Judge0, ali i analiza performansi instance sustava Judge0 koja se aktivno koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. Konačno, na kraju se donose smjernice za budući razvoj radnog okvira i aplikacije.
+
+\kljucnerijeci{analiza performansi, sustav za udaljeno izvršavanje programskog kôda, sustav za udaljeno ocjenjivanje, izvršavanje nepouzdanog programskog kôda, sphere engine, piston, judge0}
 \end{sazetak}
+
+\pagebreak
 
 \engtitle{Performance analysis of online code execution systems}
 \begin{abstract}
+Online code execution systems have a key impact on the user experience, and it is important that during intense multi-user workloads, the user experience does not suffer due to the long processing time of code execution requests. So far, in the context of online code execution systems, no framework has been made to analyze their performance and assess their quality and reliability. This paper presents the first framework for analyzing the performance and evaluating the quality and reliability of the service offered by online code execution systems. This paper also presents the Hélory application that implements the presented framework for performance analysis and quality and reliability assessment for three systems for online code execution: Sphere Engine, Piston and Judge0. After reviewing the basic functionalities and interface of the Hélory application, an example of use in the performance analysis of the Piston and Judge0 systems is given, as well as the performance analysis of the Judge0 system instance actively used at the Faculty of Electrical Engineering and Computing, University of Zagreb. Finally, guidelines for the future development of the framework and application are given.
 \keywords{performance analysis, online code execution system, online judge
-system, untrusted code execution}
+system, untrusted code execution, sphere engine, piston, judge0}
 \end{abstract}
 
 \end{document}
