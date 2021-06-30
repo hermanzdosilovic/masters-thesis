@@ -28,7 +28,7 @@
 
 \includepdf[pages=-]{hr_0036480275_56.pdf}
 
-\zahvala{}
+\zahvala{Deo grátias.}
 
 \tableofcontents
 
@@ -97,7 +97,7 @@ int main() {
 }
 \end{lstlisting}
 
-Izoliranje izvršavanja programskog kôda korisnika još je važnije od izolacije prevođenja, budući da je za zloupotrebu neizoliranog procesa prevođenja potrebno nešto više znanja o prevodiocima i programskom jeziku koji se koristi. Isječak \ref{lst:fork-bomb} prikazuje C program koji će beskonačno mnogo puta stvoriti novi proces, i svaki novostvoreni proces napravit će isto. Budući da se broj novostvorenih procesa može opisati eksponencijalnom funkcijom $f(x) = 2^x$, gdje je $x$ broj ponavljanja petlje, ovaj program naziva se \textit{fork bomb}. Dovoljno je da jedan korisnik pokrene ovakav program da se na poslužitelju iscrpe procesorski i memorijski resursi koji će ga učiniti neupotrebljivim.
+Izoliranje izvršavanja programskog kôda korisnika još je važnije od izolacije prevođenja, budući da je za zloupotrebu neizoliranog procesa prevođenja potrebno nešto više znanja o prevodiocima i programskom jeziku koji se koristi. Isječak \ref{lst:fork-bomb} prikazuje C program koji će beskonačno mnogo puta stvoriti novi proces, i svaki novostvoreni proces napravit će isto. Broj novostvorenih procesa može se opisati eksponencijalnom funkcijom $f(x) = 2^x$, gdje je $x$ broj ponavljanja petlje. Dovoljno je da jedan korisnik pokrene ovakav program da se na poslužitelju iscrpe procesorski i memorijski resursi koji će ga učiniti neupotrebljivim.
 
 \
 
@@ -120,11 +120,11 @@ Oba isječka potvrđuju da je u sustavima za udaljeno ocjenjivanje nužno korist
 Gledajući iz perspektive sustava za udaljeno ocjenjivanje svaki programski kôd korisnika smatra se opasnim za poslužitelj, stoga se u kontekstu sustava za udaljeno ocjenjivanje govori o nepouzdanom programskom kôdu \engl{untrusted source code} kojeg je potrebno prevesti i izvršiti.
 
 \section{Modul za izvršavanje programskog kôda}
-Modul za izvršavanje programskog kôda (engl.\ \textit{code execution engine}, krat.\ \textit{CEE}) iduća je komponenta u arhitekturi OJ ekosustava koja koristi zaštićeno okruženje za prevođenje i izvršavanje programskog kôda, i koja zatim obrađuje meta podatke o prevođenju i izvršavanju koje generira zaštićeno okruženje. Slika \ref{fig:cee-and-sandbox} prikazuje dijagram toga interakcije između modula za izvršavanje programskog kôda i zaštićenog okruženja.
+Modul za izvršavanje programskog kôda (engl.\ \textit{code execution engine}, krat.\ \textit{CEE}) iduća je komponenta u arhitekturi OJ ekosustava koja koristi zaštićeno okruženje za prevođenje i izvršavanje programskog kôda, i koja zatim obrađuje meta podatke o prevođenju i izvršavanju koje generira zaštićeno okruženje. Slika \ref{fig:cee-and-sandbox} prikazuje dijagram toka interakcije između modula za izvršavanje programskog kôda i zaštićenog okruženja.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.65\textwidth]{images/CEE i zaštićeno okruženje.pdf}
+	\includegraphics[width=0.61\textwidth]{images/CEE i zasticeno okruzenje.pdf}
 	\caption{
 		Interakcija modula za izvršavanje programskog kôda s zaštićenim okruženjem.
 	}
@@ -136,20 +136,22 @@ Modul za izvršavanje programskog kôda (engl.\ \textit{code execution engine}, 
 \section{Sustav za udaljeno izvršavanje programskog kôda}
 Sustav za udaljeno izvršavanje programskog kôda je sustav koji nudi \textit{web} aplikacijsko sučelje \engl{web API} za prevođenje i izvršavanje proizvoljnog programskog kôda. Arhitekturalni prikaz na slici \ref{fig:oj-ecosystem} izdvaja sustav za udaljeno izvršavanje programskog kôda kao zasebnu komponentu na koju se oslanjaju sustav za udaljeno ocjenjivanje, aplikacija za udaljeno programiranje, a zatim i specijalizirane izvedbe sustava za udaljeno ocjenjivanje razvijene za specifičan slučaj uporabe. Sustav za udaljeno izvršavanje programskog kôda najčešće je strogo povezan i zavisan o ostatku komponenata u arhitekturu sustava za udaljeno ocjenjivanje \citep{9245310}, međutim, u ovom radu razmatraju se oni sustavi za udaljeno izvršavanje programskog kôda koji su neovisni o ostatku arhitekture koja se na njih oslanja.
 
-Slika \ref{fig:oces-architecture} prikazuje dijagram komponenti sustava za udaljeno izvršavanje programskog kôda koji preko \textit{web} aplikacijskog sučelja nudi uslugu izvršavanja programskog kôda (lijeva priključnica na slici \ref{fig:oces-architecture}) koju koriste sustav za udaljeno ocjenjivanje ili aplikacije za udaljeno programiranje. Putem OCES međuopreme \engl{middleware}, zahtjev za izvršavanje programskog kôda dolazi do modula za izvršavanje programskog kôda kojih u sustavu može biti više kako bi se prilikom intenzivnog višekorisničkog opterećenja zahtjevi za izvršavanje efikasnije obavili. Način izvedbe OCES međuopreme ovisi o pojedinom sustavu za udaljeno izvršavanje programskog kôda kao što se npr.\ međuoprema sustava Judge0 sastoji od PostgreSQL baze podataka koja pohranjuje sve zahtjeve za izvršavanje programskog kôda i rezultate prevođenja i izvršavanja, i Redis baze podataka koja se koristi kao red poslova \engl{job queue} \citep{9245310}.
-
-Formalna definicija sustava za udaljeno izvršavanje programskog kôda dana je u \citep{9245310} kroz funkcionalne i nefunkcionalne zahtjeve. Funkcionalni zahtjevi podijeljeni su u nužne i dovoljne, odnosno na zahtjeve koje sustav nužno mora ispuniti i dodatne neobavezne zahtjeve. Nefunkcionalni zahtjevi su također neobavezni, ali preporučeni.
+Slika \ref{fig:oces-architecture} prikazuje dijagram komponenti sustava za udaljeno izvršavanje programskog kôda koji preko \textit{web} aplikacijskog sučelja nudi uslugu izvršavanja programskog kôda (lijeva priključnica na slici \ref{fig:oces-architecture}) koju koriste sustav za udaljeno ocjenjivanje ili aplikacije za udaljeno programiranje. 
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.75\textwidth]{images/Arhitektura OCES-a.pdf}
+	\includegraphics[width=0.6\textwidth]{images/Arhitektura OCES-a.pdf}
 	\caption{
-	    Dijagram komponenti sustava za udaljeno izvršavanje programskog kôda.
+		Dijagram komponenti sustava za udaljeno izvršavanje programskog kôda.
 	}
 	\label{fig:oces-architecture}
 \end{figure}
 
 \pagebreak
+
+Putem OCES međuopreme \engl{middleware}, zahtjev za izvršavanje programskog kôda dolazi do modula za izvršavanje programskog kôda kojih u sustavu može biti više kako bi se prilikom intenzivnog višekorisničkog opterećenja zahtjevi za izvršavanje efikasnije obavili. Način izvedbe OCES međuopreme ovisi o pojedinom sustavu za udaljeno izvršavanje programskog kôda kao što se npr.\ međuoprema sustava Judge0 sastoji od PostgreSQL baze podataka koja pohranjuje sve zahtjeve za izvršavanje programskog kôda i rezultate prevođenja i izvršavanja, i Redis baze podataka koja se koristi kao red poslova \engl{job queue} \citep{9245310}.
+
+Formalna definicija sustava za udaljeno izvršavanje programskog kôda dana je u \citep{9245310} kroz funkcionalne i nefunkcionalne zahtjeve. Funkcionalni zahtjevi podijeljeni su u nužne i dovoljne, odnosno na zahtjeve koje sustav nužno mora ispuniti i dodatne neobavezne zahtjeve. Nefunkcionalni zahtjevi su također neobavezni, ali preporučeni.
 
 \subsubsection{Funkcionalni zahtjevi}
 Sustav za udaljeno izvršavanje programskog kôda \textbf{mora} pružiti:
@@ -188,7 +190,7 @@ Preporuča se da sustav za udaljeno izvršavanje programskog kôda bude:
     \item[$\bullet$] robustan.
 \end{itemize}
 
-Čim više nefunkcionalnih zahtjeva sustav ispunjava tim ga je lakše integrirati u sustav specifično izveden za pojedini slučaj uporabe \citep{9245310}. Skalabilnost i efikasnost sustava za udaljeno izvršavanje programskog kôda dolazi do izražaja prilikom izrazitog višekorisničkog opterećenja kada krajnji korisnici neposredno preko sustava za udaljeno ocjenjivanje stvaraju zahtjeve za izvršavanje. Tada se od sustava za udaljeno izvršavanje programskog kôda očekuje da neovisno o broju zahtjeva efikasno izvrši programski kôd korisnika i vrati rezultate izvršavanja sustavu za udaljeno ocjenjivanje jer će u protivnom krajnje korisničko iskustvo biti srozano dugim vremenom čekanja. Konfigurabilnost i proširivost sustava za udaljeno izvršavanje programskog kôda omogućuje razvojnim inženjerima da sustav prilagode svojim zahtjevima prilikom razvoja sustava za određeni slučaj uporabe. Laka upogonljivost sustava za udaljeno izvršavanje programskog kôda omogućava razvojnim inženjerima da brzo napreduju u razvoju sustava za određeni slučaj uporabe. Sigurnost sustava za udaljeno izvršavanje programskog kôda uvelike ovisi načinu na koji sustav iskorištava funkcionalnosti zaštićene okoline i koristi li ju uopće. Od sustava se očekuje da niti jedan programski kôd ne naruši sigurnost i integritet poslužitelja. Ako se i dogodi da neki programski kôd uzrukuje neuobičajeno ponašanje, od sustava se očekuje da bude otporan i robustan na unutarnje pogreške koje se mogu dogoditi i da neovisno o njima vrati korisniku rezultat izvođenja.
+Čim više nefunkcionalnih zahtjeva sustav ispunjava tim ga je lakše integrirati u sustav specifično izveden za pojedini slučaj uporabe \citep{9245310}. Skalabilnost i efikasnost sustava za udaljeno izvršavanje programskog kôda dolazi do izražaja prilikom izrazitog višekorisničkog opterećenja kada krajnji korisnici neposredno preko sustava za udaljeno ocjenjivanje stvaraju zahtjeve za izvršavanje. Tada se od sustava za udaljeno izvršavanje programskog kôda očekuje da neovisno o broju zahtjeva efikasno izvrši programski kôd korisnika i vrati rezultate izvršavanja sustavu za udaljeno ocjenjivanje jer će u protivnom krajnje korisničko iskustvo biti narušeno dugim vremenom čekanja. Konfigurabilnost i proširivost sustava za udaljeno izvršavanje programskog kôda omogućuje razvojnim inženjerima da sustav prilagode svojim zahtjevima prilikom razvoja sustava za određeni slučaj uporabe. Laka upogonljivost sustava za udaljeno izvršavanje programskog kôda omogućava razvojnim inženjerima da brzo napreduju u razvoju sustava za određeni slučaj uporabe. Sigurnost sustava za udaljeno izvršavanje programskog kôda uvelike ovisi načinu na koji sustav iskorištava funkcionalnosti zaštićene okoline i koristi li ju uopće. Od sustava se očekuje da niti jedan programski kôd ne naruši sigurnost i integritet poslužitelja. Ako se i dogodi da neki programski kôd uzrukuje neuobičajeno ponašanje, od sustava se očekuje da bude otporan i robustan na unutarnje pogreške koje se mogu dogoditi i da neovisno o njima vrati korisniku rezultat izvođenja.
 
 U nastavku ove cjeline dan je pregled tri različita sustava za udaljeno izvršavanje programskog kôda koje podržava aplikacija Hélory.
 
@@ -206,6 +208,8 @@ U svrhu ovog rada dovoljno je spomenuti da sustav omogućuje prevođenje i izvr�
 	    Vizualni identitet sustava Sphere Engine. \citep{SphereEngine}
 	}
 \end{figure}
+
+\pagebreak
 
 \subsection{Sustav Piston}
 Sustav za udaljeno izvršavanje programskog kôda Piston \citep{Piston} je sustav otvorenog kôda koji je dostupan na platformi GitHub. Razvijen je i koristi se u edukativne svrhe zajednice koju vodi autor projekta.
@@ -262,15 +266,19 @@ Sustav za udaljeno ocjenjivanje formalno je definiran u \citep{wasik2018survey} 
 
 Podnošenje zahtjeva za izvršavanje programskog kôda podrazumijeva prihvaćanje programskog kôda u sustav, prevođenje po potrebi i verifikaciju da je program spreman za izvršavanje. U procjeni podnesenoga programskog kôda program se pokreće za svaki ispitni primjer i provjerava se uspješnost izvođenja programa sa zadanim procesorskim i memorijskim ograničenjima. Također, u istoj fazi, provjerava se standardni izlaz programa i uspoređuje ga se s očekivanim izlazom za trenutni ispitni primjer. Konačno, u fazi ocjenjivanja, dodjeljuje se ocjena na temelju rezultata iz prethodnih faza. Tako npr.\ na ocjenu u natjecateljskom programiranju može utjecati vrijeme koje je bilo potrebno natjecatelju da riješi pojedini zadatak. Što kasnije natjecatelj riješi ispravno zadatak to će manje bodova dobiti čak ako su mu svi ispitni primjeri ispravni uz zadana procesorska i memorijska ograničenja.
 
+\pagebreak
+
 \subsection{Interakcija sa sustavom za udaljeno izvršavanje programskog kôda}
 \label{subsec:interaction}
 Interakcija sustava za udaljeno ocjenjivanje i sustava za udaljeno izvršavanje programskog kôda može se dogoditi na dva načina: sinkrono i asinkrono.
 
 Slika \ref{fig:sync-interaction} prikazuje dijagram toka sinkrone interakcije koja započinje zahtjevom za izvršavanjem koji OCES prihvati i u odgovoru vraća rezultate izvršavanja. Budući da izvršavanje programskog kôda može trajati i po nekoliko sekundi ova interakcija s OCES-om može iscrpiti njegove poslužiteljske resurse prilikom intenzivnog višekorisničkog opterećenja.
 
+\
+
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.75\textwidth]{images/Sync Interakcija.pdf}
+	\includegraphics[width=0.8\textwidth]{images/Sync Interakcija.pdf}
 	\caption{
 		Sinkrona interakcija OJ-a i OCES-a.
 	}
@@ -278,6 +286,10 @@ Slika \ref{fig:sync-interaction} prikazuje dijagram toka sinkrone interakcije ko
 \end{figure}
 
 Asinkrona interakcija (slika \ref{fig:async-interaction}) započinje na isti način kao i sinkrona - zahtjevom za izvršavanje koji OCES prihvati, međutim, sada OCES vraća jedinstveni identifikator zahtjeva. Nakon što OJ primi jedinstveni identifikator svog zahtjeva na njemu je odgovornost da posebnim zahtjevom provjerava njegov status dok ne utvrdi da je izvršavanje završilo.
+
+Sustav Piston podržava sinkronu interakciju, sustav Sphere Engine podržava asinkronu, dok sustav Judge0 podržava oba načina interakcije. Postoji zapravo još jedan način interakcije između OJ-a i OCES-a, a to je preko povratnog URL poziva \engl{URL callback}, međutim, u ovom radu takva vrsta interakcije se ne razmatra. Ukratko, prilikom stvaranja zahtjeva OJ navodi URL kojeg OCES mora iskoristiti za stvaranje povratnog zahtjeva koji u svom tijelu \engl{body} sadrži rezultat izvršavanja programa. Ovakva vrsta interakcije se ne razmatra u ovom radu jer klijent treba biti realiziran i kao poslužitelj koji može prihvatiti i obraditi povratni zahtjev koji dolazi od OCES-a. Sphere Engine i Judge0 podržavaju i ovakav način interakcije.
+
+\
 
 \begin{figure}[htb]
 	\centering
@@ -288,7 +300,7 @@ Asinkrona interakcija (slika \ref{fig:async-interaction}) započinje na isti na�
 	\label{fig:async-interaction}
 \end{figure}
 
-Sustav Piston podržava sinkronu interakciju, sustav Sphere Engine podržava asinkronu, dok sustav Judge0 podržava oba načina interakcije. Postoji zapravo još jedan način interakcije između OJ-a i OCES-a, a to je preko povratnog URL poziva \engl{URL callback}, međutim, u ovom radu takva vrsta interakcije se ne razmatra. Ukratko, prilikom stvaranja zahtjeva OJ navodi URL kojeg OCES mora iskoristiti za stvaranje povratnog zahtjeva koji u svom tijelu \engl{body} sadrži rezultat izvršavanja programa. Sphere Engine i Judge0 podržavaju i ovakav način interakcije.
+\pagebreak
 
 \section{\textit{Web} aplikacija za udaljeno programiranje}
 \textit{Web} aplikacija za udaljeno programiranje poput aplikacije Judge0 IDE \citep{Judge0IDE} najjednostavniji je primjer uporabe sustava za udaljeno izvršavanje programskog kôda koje korisnicima omogućuju pisanje, prevođenje i izvršavanje programskog kôda u jednom od podržanih programskih jezika (slika \ref{fig:judge0-ide-ui}).
@@ -361,7 +373,7 @@ Budući da sustav za udaljeno izvršavanje programskog kôda neposredno preko su
 Radni okvir omogućuje razmatranje tri različite dinamike višekorisničkog opterećenja koje se koriste prilikom stvaranja zahtjeva za izvršavanje programskog kôda (u nastavku teksta: \textit{zahtjevi}):
 \begin{itemize}
     \item impulsno-determinističko opterećenje,
-    \item kontinuiran-determinističko opterećenje, i
+    \item kontinuirano-determinističko opterećenje, i
     \item kontinuirano-stohastičko opterećenje.
 \end{itemize}
 
@@ -373,7 +385,7 @@ Impulsno-determinističko opterećenje sustava definirano je parametrima $N$ i $
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/Impulsno-determinističko opterećenje (N = 5, M = 4).pdf}
+	\includegraphics[width=\textwidth]{images/Impulsno-deterministicko opterecenje (N = 5, M = 4).pdf}
 	\caption{
 		Impulsno-determinističko opterećenje sustava (N = 5, M = 4).
 	}
@@ -386,13 +398,13 @@ Impulsno-determinističko opterećenje sustava predstavlja najjednostavniju dina
 
 \subsection{Kontinuirano-determinističko opterećenje sustava}
 \label{subsec:cd-load}
-Kontinuirano-determinističko opterećenje sustava definirano je također parametrima $N$ i $M$, međutim, za razliku od prethodne vrste opterećenja, istovremeni zahtjevi u iteraciji $i$ mogu započeti tek u vremenu $t_i = t_{i - 1} + 1$, gdje je vrijeme $t$ izraženo u sekundama. Budući da pri intenzivnom višekorisničkom opterećenju vrijeme obrade zahtjeva može trajati i po nekoliko desetaka sekundi, korak od jedne sekunde predstavlja najmanji interval vremena koji ima smisla promatrati kada se govori o broju zahtjeva koji dolaze u sustav po jedinici vremena.
+Kontinuirano-determinističko opterećenje sustava definirano je također parametrima $N$ i $M$, međutim, za razliku od prethodne vrste opterećenja, istovremeni zahtjevi u iteraciji $i$ smiju biti poslani i prije nego što se izvrše zahtjevi u iteraciji $i-1$, ali tek u vremenu $t_i = t_{i - 1} + 1$, gdje je vrijeme $t$ izraženo u sekundama. Budući da pri intenzivnom višekorisničkom opterećenju vrijeme obrade zahtjeva može trajati i po nekoliko desetaka sekundi, korak od jedne sekunde predstavlja najmanji interval vremena koji ima smisla promatrati kada se govori o broju zahtjeva koji dolaze u sustav po jedinici vremena.
 
 Slika \ref{fig:cd-load} prikazuje primjer dinamike kontinuirano-determinističkog opterećenja od 10 iteracija gdje je u svakoj iteraciji napravljeno 5 zahtjeva.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/Kontinuirano-determinističko opterećenje (N = 5, M = 10).pdf}
+	\includegraphics[width=\textwidth]{images/Kontinuirano-deterministicko opterecenje (N = 5, M = 10).pdf}
 	\caption{
 		Kontinuirano-determinističko opterećenje sustava (N = 5, M = 10).
 	}
@@ -402,7 +414,7 @@ Slika \ref{fig:cd-load} prikazuje primjer dinamike kontinuirano-determinističko
 \pagebreak
 
 \subsection{Kontinuirano-stohastičko opterećenje sustava}
-Kontinuirano-stohastičko opterećenje sustava koristi Poissonovu distribuciju s parametrom $\lambda = N$ za određivanje broja istovremenih zahtjeva u koraku $i$. Slika \ref{fig:cs-load} prikazuje primjer dinamike kontinuirano-stohastičkog opterećenja s parametrima $N=5$ i $M=10$. Niz pseudo-slučajnih brojeva iz primjera generiran je pomoću isječka \ref{lst:poisson-numbers} napisanog u programskom jeziku Python.
+Za razliku od kontinuirano-determinističkog opterećenja koje u svakom koraku $i$ koristi nepromjenjivi $N$, kontinuirano-stohastičko opterećenje sustava koristi Poissonovu distribuciju s parametrom $\lambda = N$ za određivanje broja istovremenih zahtjeva u koraku $i$. Slika \ref{fig:cs-load} prikazuje primjer dinamike kontinuirano-stohastičkog opterećenja s parametrima $N=5$ i $M=10$. Niz pseudo-slučajnih brojeva iz primjera generiran je pomoću isječka \ref{lst:poisson-numbers} napisanog u programskom jeziku Python.
 
 \
 
@@ -420,7 +432,7 @@ Kontinuirano-stohastičko opterećenje sustava najbliže oponaša stvarnu dinami
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\textwidth]{images/Kontinuirano-stohastičko opterećenje (N = 5, M = 10).pdf}
+	\includegraphics[width=\textwidth]{images/Kontinuirano-stohasticko opterecenje (N = 5, M = 10).pdf}
 	\caption{
 		Kontinuirano-stohastičko opterećenje sustava (N = 5, M = 10).
 	}
@@ -444,7 +456,7 @@ Prilikom analize pretpostavlja se da su programski kôdovi scenarija ispravni, o
 
 Implementacija svakog scenarija korištenja dostupna je u tri programska jezika: \text{C++}, Java i Python. Iako se u okviru ovog rada promatraju samo navedeni programski jezici, radni okvir analize nije ograničen samo na njih. Također, u ovom radu ne razmatraju se višedretvene implementacije scenarija.
 
-Svaki scenarij sastoji se od: standardnog ulaza, programskog kôda i očekivanog standardnog izlaza. Standardni ulaz i očekivani standardni izlaz isti su za svaki programski jezik u kojem je scenarij napisan. Sadržaj standardnog ulaza dovodi se na ulaz programa koji je nastao prevođenjem programskog kôda scenarija u odabranom programskom jeziku, a očekivani standardni izlaz koristi se za usporedbu sa standardnim izlazom programa nakon njegovog izvršavanja. Ova provjera važna ja kako bi se utvrdilo da je program zaista odradio zadatak zadan scenarijem.
+Svaki scenarij sastoji se od: standardnog ulaza, programskog kôda i očekivanog standardnog izlaza. Standardni ulaz i očekivani standardni izlaz isti su za svaki programski jezik u kojem je scenarij implementiran. Sadržaj standardnog ulaza dovodi se na ulaz programa koji je nastao prevođenjem programskog kôda scenarija u odabranom programskom jeziku, a očekivani standardni izlaz koristi se za usporedbu sa standardnim izlazom programa nakon njegovog izvršavanja. Ova provjera važna ja kako bi se utvrdilo da je program zaista odradio zadatak zadan scenarijem.
 
 \subsection{Jednostavan scenarij}
 Jednostavan scenarij zahtjeva da korisnički program ispiše \lstinline{hello, world} na standardni izlaz.
@@ -479,11 +491,11 @@ Vremenska složenost algoritma koji implementira rješenje ovog scenarija je $\m
 \section{Strategije izvršavanja}
 Odabir strategije izvršavanja programskog kôda svodi se na odabir načina interakcije sa sustavom koji su objašnjeni u pododjeljku \ref{subsec:interaction}.
 
-Bilo da se radi o sinkronoj ili asinkronoj interakciji prvi zahtjev prema sustavu naziva se \textit{zahtjev narudžbe} \engl(order request) koji sadrži sve potrebne informacije koje sustav treba za izvršavanje programskog kôda, a to su: programski kôd, identifikator programskog jezika, standardni ulaz i očekivani standardni izlaz.
+Bilo da se radi o sinkronoj ili asinkronoj interakciji prvi zahtjev prema sustavu naziva se \textit{zahtjev narudžbe} \engl{order request} koji sadrži sve potrebne informacije koje sustav treba za izvršavanje programskog kôda, a to su: programski kôd, identifikator programskog jezika, standardni ulaz i očekivani standardni izlaz.
 
 Ako se koristi sinkrona interakcija sa sustavom onda će odgovor na zahtjev narudžbe biti rezultat izvršavanja programskog kôda. 
 
-Međutim, ako se koristi asinkrona interakcija tada je potrebno raditi tzv. \textit{zahtjev ispitivanja} \engl(probe request) tako dugo dok se ne utvrdi da je izvršavanje završilo. Implementacija radnog okvira u aplikaciji Hélory radi jedan zahtjev ispitivanja po sekundi s time da između zahtjeva narudžbe i prvog zahtjeva ispitivanja mora proći dvije sekunde. Ova dinamika slanja zahtjeva ispitivanja odabrana je jer ju sustav Sphere Engine preporuča u svojoj dokumentaciji.
+Međutim, ako se koristi asinkrona interakcija tada je potrebno raditi tzv. \textit{zahtjev ispitivanja} \engl{probe request} tako dugo dok se ne utvrdi da je izvršavanje završilo. Implementacija radnog okvira u aplikaciji Hélory radi jedan zahtjev ispitivanja po sekundi s time da između zahtjeva narudžbe i prvog zahtjeva ispitivanja mora proći dvije sekunde. Ova dinamika slanja zahtjeva ispitivanja odabrana je jer ju sustav Sphere Engine preporuča u svojoj dokumentaciji.
 
 Sustav Piston podržava sinkronu strategiju izvršavanja, sustav Sphere Engine asinkronu, a sustav Judge0 podržava obje.
 
@@ -491,7 +503,7 @@ Sustav Piston podržava sinkronu strategiju izvršavanja, sustav Sphere Engine a
 Radni okvir razmatra dvije metrike koje se koriste u analizi performansi i ocjeni kvalitete i pouzdanosti sustava: uspješnost izvršavanja i vrijeme obrade.
 
 \subsubsection{Uspješnost izvršavanja}
-Budući da prilikom intenzivnog višekorisničkog opterećenje može doći do preopterećenja sustava, zahtjevi mogu biti odbačeni ili može doći do greške uslijed prevođenja ili izvršavanja zbog manjka slobodnih resursa na poslužitelju. Ovo su samo neki od brojnih razloga zbog čega sustav može neuspješno izvršiti programski kôd korisnika i razmatranje svakog pojedinog razloga izlazi iz opsega ovog rada, i ovisi o izvedbi svakog pojedinog sustava.
+Budući da prilikom intenzivnog višekorisničkog opterećenje može doći do preopterećenja sustava, zahtjevi mogu biti odbačeni ili može doći do greške uslijed prevođenja ili izvršavanja zbog manjka slobodnih resursa na poslužitelju. Ovo su samo neki od brojnih razloga zbog čega sustav može neuspješno izvršiti programski kôd korisnika i razmatranje svakog pojedinog razloga izlazi iz opsega ovog rada, i ovisi o izvedbi svakog pojedinog sustava. Uspješnost pojedinog zahtjeva izvršavanja poprima Booleovu vrijednost, a promatrana metrika uspješnosti izvršavanja izražava se kao udio uspješno obrađenih zahtjeva.
 
 \subsubsection{Vrijeme obrade}
 Vrijeme obrade \engl{turn around time} najvažnija je metrika iz perspektive krajnjeg korisnika koje se definira kao vrijeme proteklo između trenutka kada je korisnik zahtjevom narudžbe poslao sve potrebne podatke sustavu, do trenutka kada je korisnik ustanovio da je izvršavanje završilo bilo zahtjevom ispitivanja u asinkronoj interakciji, bilo primanjem odgovora na zahtjev narudžbe u sinkronoj interakciji.
@@ -656,7 +668,7 @@ Navođenjem jedinstvenog identifikatora OCES-a, opcijom \lstinline{--endpoint}, 
 $ ./helory run deterministic --users 5x10 --endpoint judge0_ce
 \end{lstlisting}
 
-Dostupne OCES instance korisnik navodi u glavnoj konfiguracijskoj datoteci u YAML formatu. Ako se drugačije ne navede opcijom \lstinline{--config}, aplikacija pretpostavlja da je glava konfiguracijska datoteka dostupna u tekućem direktoriju pod nazivom \textit{config.yaml}. Glavna konfiguracijska datoteka također sadrži i podatke o putanji do konfiguracijskih direktorija scenarija i programskih jezika koji su dostupni aplikaciji.
+Dostupne OCES instance korisnik navodi u glavnoj konfiguracijskoj datoteci u YAML formatu. Ako se drugačije ne navede opcijom \lstinline{--config}, aplikacija pretpostavlja da je glavna konfiguracijska datoteka dostupna u tekućem direktoriju pod nazivom \textit{config.yaml}. Glavna konfiguracijska datoteka također sadrži i podatke o putanji do konfiguracijskih direktorija scenarija i programskih jezika koji su dostupni aplikaciji.
 
 \pagebreak
 
@@ -839,7 +851,7 @@ Prvi eksperiment višekorisničkog opterećenja kontinuirano-stohastičke dinami
 
 Međutim, prilikom povećanja opterećenja na $N=5$ udio uspješno obrađenih zahtjeva pada na 82,98\%, a medijan vrijeme obrade zahtjeva raste i do 55 sekundi (slika \ref{fig:piston-2}). Sustav Piston još teže podnosi opterećenje za $N=10$ kada udio uspješno obrađenih zahtjeva dodatno padne na 42,44\%.
 
-Dodatno provedeni eksperimenti pokazuju da sustav Piston za ne obradi uspješno niti jedan zahtjev za opterećenje $N=1$ scenarija procesorskog opterećenja u \text{C++} implementaciji.
+Dodatno provedeni eksperimenti pokazuju da sustav Piston ne obradi uspješno niti jedan zahtjev za opterećenje $N=1$ scenarija procesorskog opterećenja u \text{C++} implementaciji.
 
 Daljnja analiza performansi sustava Piston nije potrebna budući da za jednostavan scenarij korištenja ne prikazuje dobre rezultate niti po pitanju performansi, niti pouzdanosti.
 
@@ -944,7 +956,7 @@ Sustavi za udaljeno izvršavanje programskog kôda imaju ključni utjecaj na kor
 
 \engtitle{Performance analysis of online code execution systems}
 \begin{abstract}
-Online code execution systems have a key impact on the user experience, and it is important that during intense multi-user workloads, the user experience does not suffer due to the long processing time of code execution requests. So far, in the context of online code execution systems, no framework has been made to analyze their performance and assess their quality and reliability. This paper presents the first framework for analyzing the performance and evaluating the quality and reliability of the service offered by online code execution systems. This paper also presents the Hélory application that implements the presented framework for performance analysis and quality and reliability assessment for three systems for online code execution: Sphere Engine, Piston and Judge0. After reviewing the basic functionalities and interface of the Hélory application, an example of use in the performance analysis of the Piston and Judge0 systems is given, as well as the performance analysis of the Judge0 system instance actively used at the Faculty of Electrical Engineering and Computing, University of Zagreb. Finally, guidelines for the future development of the framework and application are given.
+Online code execution systems have a crucial impact on the user experience, and it is essential that during intense multi-user workloads, the user experience does not suffer due to the long processing time of code execution requests. So far, in the context of online code execution systems, no framework has been made to analyze their performance and assess their quality and reliability. This paper presents the first framework for analyzing the performance and evaluating the quality and reliability of the service offered by online code execution systems. This paper also presents the Hélory application that implements the presented framework for performance analysis and quality and reliability assessment for three systems for online code execution: Sphere Engine, Piston, and Judge0. After reviewing the basic functionalities and interface of the Hélory application, an example of use in the performance analysis of the Piston and Judge0 systems is given, as well as the performance analysis of the Judge0 system instance actively used at the Faculty of Electrical Engineering and Computing, University of Zagreb. Finally, guidelines for the future development of the framework and application are given.
 
 \keywords{performance analysis, online code execution system, online judge
 system, untrusted code execution, sphere engine, piston, judge0}
