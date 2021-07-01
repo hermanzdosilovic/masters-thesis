@@ -840,11 +840,13 @@ Konačno, slika \ref{fig:report-raw-data} prikazuje sirove podatke u formatu JSO
 
 \chapter{Primjer korištenja aplikacije Hélory}
 \label{chap:use}
-U ovom poglavlju bit će prikazan primjer korištenja aplikacije Hélory u analizi performansi sustava Piston i Judge0 koji su postavljeni na dva različita poslužitelja istih resursnih kapaciteta (2 CPU-a i 8 GB radne memorije) kupljenih preko platforme Digital Ocean. Cilj eksperimenta je ocijeniti kvalitetu i pouzdanost usluge koju nude ova dva sustava, međutim, treba uzeti u obzir da kvaliteta i pouzdanost usluge također ovisi i resursima poslužitelja, ali i načinu na koji ih sustavi iskorištavaju. Također, važno je naglasiti da su sustavi na poslužitelje instalirani prema javno dostupnim uputama bez dodatnih modifikacija.
+U ovom poglavlju prikazan je primjer korištenja aplikacije Hélory u analizi performansi sustava Piston i Judge0 koji su postavljeni na dva različita poslužitelja istih resursnih kapaciteta (2 CPU-a i 8 GB radne memorije) kupljenih preko platforme Digital Ocean. Cilj eksperimenta je ocijeniti kvalitetu i pouzdanost usluge koju nude ova dva sustava, međutim, treba uzeti u obzir da kvaliteta i pouzdanost usluge također ovisi i resursima poslužitelja, ali i načinu na koji ih sustavi iskorištavaju. Također, važno je naglasiti da su sustavi na poslužitelje instalirani prema javno dostupnim uputama bez dodatnih modifikacija.
 
 U analizi sustava promatrat će se jednostavan scenarij u \text{C++} implementaciji koristeći kontinuirano-stohastičku dinamiku s parametrima $N \in \left\{1,5,10\right\}$ i $M=60$. Budući da sustav Piston podržava isključivo sinkronu interakciju, u eksperimentima u kojima se koristi sustav Judge0 također će se koristiti sinkrona interakcija kako bi se ta dva sustava mogla pravedno usporediti.
 
 Dodatno, na kraju je napravljena analiza performansi instance sustava Judge0 koja se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
+
+Od nešto više od 500 eksperimentalnih rezultata, u ovom poglavlju napravljena je analiza nekoliko najznačajnijih rezultata za gore navedene instance.
 
 \section{Analiza performansi sustava Piston}
 Prvi eksperiment višekorisničkog opterećenja kontinuirano-stohastičke dinamike s parametrima $N=1$ i $M=60$ trajao je 60 sekundi i svi su zahtjevi uspješno obrađeni. Slika \ref{fig:piston-1} prikazuje vrijeme obrade zahtjeva grupiranih u intervale po 5 sekundi. Medijan vrijeme obrade svake grupe zahtjeve je između 0,5 i 1 sekunde što znači da sustav dobro podnosi opterećenje. 
@@ -853,7 +855,7 @@ Međutim, prilikom povećanja opterećenja na $N=5$ udio uspješno obrađenih za
 
 Dodatno provedeni eksperimenti pokazuju da sustav Piston ne obradi uspješno niti jedan zahtjev za opterećenje $N=1$ scenarija procesorskog opterećenja u \text{C++} implementaciji.
 
-Daljnja analiza performansi sustava Piston nije potrebna budući da za jednostavan scenarij korištenja ne prikazuje dobre rezultate niti po pitanju performansi, niti pouzdanosti.
+Daljnja analiza performansi sustava Piston nije potrebna budući da za jednostavan scenarij korištenja ne prikazuje dobre rezultate niti po pitanju performansi, niti pouzdanosti, a rezultati pokazuju da sustav Piston podnosi srednje opterećenje od jednog zahtjeva u sekundi jednostavnog scenarija korištenja u C++ implementaciji.
 
 \begin{figure}[htb]
 	\centering
@@ -882,7 +884,7 @@ Pri opterećenju $N=5$ Judge0 zadržava udio uspješno obrađenih zahtjeva, međ
 
 Daljnjim povećanjem opterećenja na $N=10$ udio uspješno obrađenih zahtjeva pada na 81,79\%, a medijan vrijeme obrade zahtjeva i dalje linearno raste. Međutim, dodatnim eksperimentima utvrđeno je da pri asinkronoj interakciji istog opterećenja udio uspješno obrađenih zahtjeva 100\%, ali medijan vrijeme obrade zahtjeva opet linearno raste.
 
-Na poslužitelju s istim resursnim kapacitetima, sustav Judge0 pokazuje bolju pouzdanost od sustava Piston uz uvjet da se koristi preporučena asinkrona interakcija, međutim, medijan vrijeme obrade zahtjeva pri opterećenju $N>1$ linearno raste s vremenom trajanja opterećenja.
+Na poslužitelju s istim resursnim kapacitetima, sustav Judge0 pokazuje bolju pouzdanost od sustava Piston uz uvjet da se koristi preporučena asinkrona interakcija, međutim, kao i sustav Piston, sustav Judge0 podnosi srednje opterećenje od jednog zahtjeva u sekundi jednostavnog scenarija korištenja u C++ implementaciji. 
 
 \begin{figure}[htb]
 	\centering
@@ -904,19 +906,15 @@ Na poslužitelju s istim resursnim kapacitetima, sustav Judge0 pokazuje bolju po
 	\label{fig:judge0-2}
 \end{figure}
 
-Instanca sustava Judge0 koja se koristi na Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu pokazuje zavidno stabilno medijan vrijeme obrade zahtjeva za kontinuirano-stohastičko opterećenje parametara $N=5$ i $M=60$ s asinkronom interakcijom za jednostavan scenarij korištenja u \text{C++} implementaciji. Slika \ref{fig:judge0-fer-1} prikazuje vrijeme obrade zahtjeva grupiranih u intervale duljine 5 sekundi. Svi zahtjevi uspješno su obrađeni. Povećanjem intenziteta na $N=10$ sustav zadržava stabilno medijan vrijeme obrade kao i u prethodnom slučaju, međutim, pri intenzitetu od $N=15$ udio uspješno obrađenih zahtjeva pada na 36,82\%. Razlog ovog naglog pada može biti zbog toga što u sustavu dolazi do prepunjenja reda poslova čija maksimalna veličina na toj instanci iznosi 250. To znači da će prilikom dolaska 251.\ zahtjeva sustav odbaciti zahtjev jer je red poslova pun.
-
-Dodatni eksperimenti napravljeni nad ovom instancom pokazuju kako je za sustav Judge0 uistinu nepovoljno koristiti sinkronu interakciju jer pri opterećenju od $N=5$ sustav uspješno obradi svega 70.21\% zahtjeva, dok medijan vrijeme obrade zahtjeva linearno raste s vremenom trajanja eksperimenta (slika \ref{fig:judge0-fer-2}). Službena, javno dostupna, instanca sustava Judge0 \citep{Judge0CE} nema problema sa rukovanjem ovog intenziteta opterećenja u sinkronoj interakciji. Njezino medijan vrijeme obrade zahtjeva ponaša se kao na slici \ref{fig:judge0-fer-1}, odnosno, kao i FER-ova instanca za asinkronu interakciju.
-
 \pagebreak
 
-Eksperimenti pokazuju da FER-ova instanca sustava Judge0 podnosi srednje opterećenje od 10 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi srednje opterećenje od 5 zahtjeva u sekundi, a za programski jezik Python čak 20 zahtjeva u sekundi. Za sva tri jezika vrijeme obrade zahtjeva izgleda kao na slici \ref{fig:judge0-fer-1}.
+\subsubsection{Analiza performansi FER-ove instance sustava Judge0}
 
-\
+Instanca sustava Judge0 koja se koristi na Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu pokazuje zavidno stabilno medijan vrijeme obrade zahtjeva za kontinuirano-stohastičko opterećenje parametara $N=5$ i $M=60$ s asinkronom interakcijom za jednostavan scenarij korištenja u \text{C++} implementaciji. Slika \ref{fig:judge0-fer-1} prikazuje vrijeme obrade zahtjeva grupiranih u intervale duljine 5 sekundi. Svi zahtjevi uspješno su obrađeni. Povećanjem intenziteta na $N=20$ sustav zadržava stabilno medijan vrijeme obrade kao i u prethodnom slučaju, međutim, pri intenzitetu od $N=25$ medijan vrijeme obrade počinje rasti s vremenom trajanja eksperimenta (slika \ref{fig:judge0-fer-2}).
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.9\textwidth]{images/Judge0 FER TAT for 5 5s.png}
+	\includegraphics[width=0.89\textwidth]{images/Judge0 FER TAT for 5 5s.png}
 	\caption{
 		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=5$ i $M=60$ s asinkronom interakcijom.
 	}
@@ -925,11 +923,44 @@ Eksperimenti pokazuju da FER-ova instanca sustava Judge0 podnosi srednje optere�
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.9\textwidth]{images/Judge0 FER TAT for sync 5 5s.png}
+	\includegraphics[width=0.89\textwidth]{images/Judge0 FER TAT for 25 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=25$ i $M=60$ s asinkronom interakcijom.
+	}
+	\label{fig:judge0-fer-2}
+\end{figure}
+
+Dodatni eksperimenti napravljeni nad ovom instancom pokazuju kako je za sustav Judge0 uistinu nepovoljno koristiti sinkronu interakciju jer pri opterećenju od $N=5$ sustav uspješno obradi svega 70.21\% zahtjeva, dok medijan vrijeme obrade zahtjeva linearno raste s vremenom trajanja eksperimenta (slika \ref{fig:judge0-fer-3}). Službena, javno dostupna, instanca sustava Judge0 \citep{Judge0CE} nema problema sa rukovanjem ovog intenziteta opterećenja u sinkronoj interakciji. Njezino medijan vrijeme obrade zahtjeva ponaša se kao na slici \ref{fig:judge0-fer-1}, odnosno, kao i FER-ova instanca za asinkronu interakciju.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Judge0 FER TAT for sync 5 5s.png}
 	\caption{
 		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=5$ i $M=60$ sa sinkronom interakcijom.
 	}
-	\label{fig:judge0-fer-2}
+	\label{fig:judge0-fer-3}
+\end{figure}
+
+Eksperimenti pokazuju da FER-ova instanca sustava Judge0 podnosi srednje opterećenje od 20 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi srednje opterećenje od 10 zahtjeva u sekundi, a za programski jezik Python čak 25 zahtjeva u sekundi.
+
+Za razliku od jednostavnog scenarija korištenja, kod scenarija procesorskog opterećenja u \text{C++} implementaciji dolazi od rasta medijan vremena obrade već pri opterećenju od $N=5$ (slika \ref{fig:judge0-fer-4}), i isto ponašanje uočava se i u Java i Python implementaciji (slika \ref{fig:judge0-fer-5}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Judge0 FER TAT for CPU Intensive 5x60 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=5$ i $M=60$ scenarija procesorskog opterećenja u \text{C++} implementaciji.
+	}
+	\label{fig:judge0-fer-4}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\textwidth]{images/Judge0 FER TAT for CPU Intensive Java 5x60 5s.png}
+	\caption{
+		Vrijeme obrade zahtjeva FER-ove instance sustava Judge0 za $N=5$ i $M=60$ scenarija procesorskog opterećenja u Java implementaciji.
+	}
+	\label{fig:judge0-fer-5}
 \end{figure}
 
 \chapter{Budući razvoj}
