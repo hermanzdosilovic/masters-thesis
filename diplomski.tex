@@ -500,13 +500,16 @@ Međutim, ako se koristi asinkrona interakcija tada je potrebno raditi tzv. \tex
 Sustav Piston podržava sinkronu strategiju izvršavanja, sustav Sphere Engine asinkronu, a sustav Judge0 podržava obje.
 
 \section{Metrike za analizu performansi}
-Radni okvir razmatra dvije metrike koje se koriste u analizi performansi i ocjeni kvalitete i pouzdanosti sustava: uspješnost izvršavanja i vrijeme obrade.
+Radni okvir razmatra tri metrike koje se koriste u analizi performansi i ocjeni kvalitete i pouzdanosti sustava: uspješnost izvršavanja, vrijeme obrade, i maksimalno opterećenje.
 
 \subsubsection{Uspješnost izvršavanja}
 Budući da prilikom intenzivnog višekorisničkog opterećenje može doći do preopterećenja sustava, zahtjevi mogu biti odbačeni ili može doći do greške uslijed prevođenja ili izvršavanja zbog manjka slobodnih resursa na poslužitelju. Ovo su samo neki od brojnih razloga zbog čega sustav može neuspješno izvršiti programski kôd korisnika i razmatranje svakog pojedinog razloga izlazi iz opsega ovog rada, i ovisi o izvedbi svakog pojedinog sustava. Uspješnost pojedinog zahtjeva izvršavanja poprima Booleovu vrijednost, a promatrana metrika uspješnosti izvršavanja izražava se kao udio uspješno obrađenih zahtjeva.
 
 \subsubsection{Vrijeme obrade}
 Vrijeme obrade \engl{turn around time} najvažnija je metrika iz perspektive krajnjeg korisnika koje se definira kao vrijeme proteklo između trenutka kada je korisnik zahtjevom narudžbe poslao sve potrebne podatke sustavu, do trenutka kada je korisnik ustanovio da je izvršavanje završilo bilo zahtjevom ispitivanja u asinkronoj interakciji, bilo primanjem odgovora na zahtjev narudžbe u sinkronoj interakciji.
+
+\subsubsection{Maksimalno opterećenje}
+Maksimalno opterećenje koje sustav podržava definira se kao maksimalan broj istovremenih zahtjeva $N$ koje sustav može u potpunosti uspješno obraditi za vrijeme kontinuirano-stohastičkog opterećenja, a da medijan vrijeme obrade zahtjeva ne raste s trajanjem eksperimenta.
 
 \chapter{Aplikacija Hélory}
 \label{chap:helory}
