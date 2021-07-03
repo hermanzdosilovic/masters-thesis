@@ -855,7 +855,7 @@ Međutim, prilikom povećanja opterećenja na $N=5$ udio uspješno obrađenih za
 
 Dodatno provedeni eksperimenti pokazuju da sustav Piston ne obradi uspješno niti jedan zahtjev za opterećenje $N=1$ scenarija procesorskog opterećenja u \text{C++} implementaciji.
 
-Daljnja analiza performansi sustava Piston nije potrebna budući da za jednostavan scenarij korištenja ne prikazuje dobre rezultate niti po pitanju performansi, niti pouzdanosti, a rezultati pokazuju da sustav Piston podnosi srednje opterećenje od jednog zahtjeva u sekundi jednostavnog scenarija korištenja u C++ implementaciji.
+Daljnja analiza performansi sustava Piston nije potrebna budući da za jednostavan scenarij korištenja ne prikazuje dobre rezultate niti po pitanju performansi, niti pouzdanosti, a rezultati pokazuju da sustav Piston podnosi maksimalno opterećenje od jednog zahtjeva u sekundi jednostavnog scenarija korištenja u C++ implementaciji.
 
 \begin{figure}[htb]
 	\centering
@@ -884,7 +884,7 @@ Pri opterećenju $N=5$ Judge0 zadržava udio uspješno obrađenih zahtjeva, međ
 
 Daljnjim povećanjem opterećenja na $N=10$ udio uspješno obrađenih zahtjeva pada na 81,79\%, a medijan vrijeme obrade zahtjeva i dalje linearno raste. Međutim, dodatnim eksperimentima utvrđeno je da pri asinkronoj interakciji istog opterećenja udio uspješno obrađenih zahtjeva 100\%, ali medijan vrijeme obrade zahtjeva opet linearno raste.
 
-Na poslužitelju s istim resursnim kapacitetima, sustav Judge0 pokazuje bolju pouzdanost od sustava Piston uz uvjet da se koristi preporučena asinkrona interakcija, međutim, kao i sustav Piston, sustav Judge0 podnosi srednje opterećenje od jednog zahtjeva u sekundi jednostavnog scenarija korištenja u C++ implementaciji. 
+Na poslužitelju s istim resursnim kapacitetima, sustav Judge0 pokazuje bolju pouzdanost od sustava Piston uz uvjet da se koristi preporučena asinkrona interakcija, međutim, kao i sustav Piston, sustav Judge0 podnosi maksimalno opterećenje od jednog zahtjeva u sekundi jednostavnog scenarija korištenja u C++ implementaciji. 
 
 \begin{figure}[htb]
 	\centering
@@ -941,7 +941,7 @@ Dodatni eksperimenti napravljeni nad ovom instancom pokazuju kako je za sustav J
 	\label{fig:judge0-fer-3}
 \end{figure}
 
-Eksperimenti pokazuju da FER-ova instanca sustava Judge0 podnosi srednje opterećenje od 20 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi srednje opterećenje od 10 zahtjeva u sekundi, a za programski jezik Python čak 25 zahtjeva u sekundi.
+Eksperimenti pokazuju da FER-ova instanca sustava Judge0 podnosi maksimalno opterećenje od 20 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi maksimalno opterećenje od 10 zahtjeva u sekundi, a za programski jezik Python čak 25 zahtjeva u sekundi.
 
 Za razliku od jednostavnog scenarija korištenja, kod scenarija procesorskog opterećenja u \text{C++} implementaciji dolazi od rasta medijan vremena obrade već pri opterećenju od $N=5$ (slika \ref{fig:judge0-fer-4}), i isto ponašanje uočava se i u Java i Python implementaciji (slika \ref{fig:judge0-fer-5}).
 
@@ -965,14 +965,14 @@ Za razliku od jednostavnog scenarija korištenja, kod scenarija procesorskog opt
 
 \chapter{Budući razvoj}
 \label{chap:future}
-Za budući razvoj radnog okvira analize performansi i ocjene kvalitete i pouzdanosti preporučuje se razmatranje dodatnih metrika poput npr.\ trajanja slanja zahtjeva narudžbe. Za budući razvoj aplikacije Hélory preporuča se razvoj nove funkcionalnosti u grafičkom izvješću koja će omogućiti objedinjavanje i usporedbu rezultata više eksperimenata. Također, preporuča se implementacija automatskog traženja srednjeg opterećenja koje instanca podržava za odabrani scenarij korištenja i programski jezik. Za to je prije svega potrebno dobro definirati uvjet stabilne podrške nekog opterećenja. Dodatno, preporuča se detektiranje i implementacija dodatnih grafova koji se mogu dobiti koristeći sirove podatke prikupljene za vrijeme trajanja eksperimenta.
+Za budući razvoj radnog okvira analize performansi i ocjene kvalitete i pouzdanosti preporučuje se razmatranje dodatnih metrika poput npr.\ trajanja slanja zahtjeva narudžbe. Za budući razvoj aplikacije Hélory preporuča se razvoj nove funkcionalnosti u grafičkom izvješću koja će omogućiti objedinjavanje i usporedbu rezultata više eksperimenata. Također, preporuča se implementacija automatskog traženja maksimalnog opterećenja koje instanca podržava za odabrani scenarij korištenja i programski jezik. Za to je prije svega potrebno dobro definirati uvjet stabilne podrške nekog opterećenja. Dodatno, preporuča se detektiranje i implementacija dodatnih grafova koji se mogu dobiti koristeći sirove podatke prikupljene za vrijeme trajanja eksperimenta.
 
 \chapter{Zaključak}
 Sustav za udaljeno izvršavanje programskog kôda služe za sigurno i pouzdano izvršavanje korisničkog programskog kôda u sustavima za udaljeno ocjenjivanje koji se koriste u raznim slučajevima primjene među kojima su i \textit{web} aplikacije za e-učenje. U arhitekturi ekosustava sustava za udaljeno ocjenjivanje, sustavi za udaljeno izvršavanje programskog kôda promatraju se kao zasebne komponente u literaturi tek od \citep{9245310}. Budući da sustavi za udaljeno izvršavanje programskog kôda imaju ključni utjecaj na korisničko iskustvo, važno je da prilikom intenzivnog višekorisničkog opterećenja korisničko iskustvo ne pati zbog dugog vremena obrade zahtjeva za izvršavanje programskog kôda. Dosada u kontekstu sustava za udaljeno izvršavanje programskog kôda nisu postavljeni radni okviri za analizu njihovih performansi i ocjenu njihove kvalitete i pouzdanosti.
 
 Ovaj rad predstavlja prvi radni okvir za analizu performansi i ocjenu kvalitete i pouzdanosti usluge koju nude sustavi za udaljeno izvršavanje programskog kôda. Ovaj rad također predstavlja i aplikaciju Hélory koja implementira predstavljeni radni okvir za analizu performansi i ocjenu kvalitete i pouzdanosti za tri sustava za udaljeno izvršavanje programskog kôda: Sphere Engine, Piston i Judge0. Razvijen u obliku komandno-linijske aplikacije, Hélory nudi jednostavno pokretanje višekorisničkog opterećenja na željenom sustavu, a nakon eksperimenta Hélory će generirati i pohraniti izvještaj o pokrenutom eksperimentu koji sadrži detaljne informacije o svakom pojedinom zahtjevu za izvršavanje i grafički prikaz metrika od interesa.
 
-Koristeći aplikaciju Hélory eksperimentalno je dokazano da se pri korištenju sustava Judge0 preporuča koristiti asinkronu interakciju sa sustavom. Također provedeni eksperimenti nad instancom sustava Judge0 koja se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu pokazuju da instanca podnosi srednje opterećenje od 10 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi srednje opterećenje od 5 zahtjeva u sekundi, a za programski jezik Python čak 20 zahtjeva u sekundi.
+Koristeći aplikaciju Hélory eksperimentalno je dokazano da se pri korištenju sustava Judge0 preporuča koristiti asinkronu interakciju sa sustavom. Također provedeni eksperimenti nad instancom sustava Judge0 koja se koristi na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu pokazuju da instanca podnosi maksimalno opterećenje od 10 zahtjeva u sekundi jednostavnog scenarija korištenja u \text{C++} implementaciji, dok za programski jezik Java ista instanca podnosi maksimalno opterećenje od 5 zahtjeva u sekundi, a za programski jezik Python čak 20 zahtjeva u sekundi.
 
 \bibliography{literatura}
 \bibliographystyle{fer}
